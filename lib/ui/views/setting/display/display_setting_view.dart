@@ -332,6 +332,7 @@ class DisplaySettingView extends StatelessWidget {
                         'systemLanguage'.tr,
                         'zh_CN'.tr,
                         'en_US'.tr,
+                        'ja_JP'.tr,
                       ][c.languageList.indexOf(c.language.value)],
                       style: TextStyle(color: Get.theme.colorScheme.outline),
                     )),
@@ -356,6 +357,7 @@ class DisplaySettingView extends StatelessWidget {
                                     'systemLanguage'.tr,
                                     'zh_CN'.tr,
                                     'en_US'.tr,
+                                    'ja_JP'.tr,
                                   ][c.languageList.indexOf(language)],
                                 ),
                                 onChanged: (value) {

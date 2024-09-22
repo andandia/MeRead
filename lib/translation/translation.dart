@@ -63,6 +63,7 @@ class AppTranslation extends Translations {
           'systemLanguage': '系统语言',
           'zh_CN': '简体中文',
           'en_US': 'English',
+          'ja_JP': '日本語',
 
           // Route: /setting/read
           'readSetting': '阅读设置',
@@ -107,6 +108,111 @@ class AppTranslation extends Translations {
           'openSource': '开源地址',
           'contactAuthor': '联系作者',
         },
-        'en_US': {}
+        'en_US': {},
+        'ja_JP': {
+          'MeRead': 'MeRead',
+          'confirm': '決定',
+          'cancel': 'キャンセル',
+          'open': '開く',
+          'close': '閉じる',
+
+          // Route: /
+          'markAllAsRead': '全て既読にする',
+          'fullTextSearch': '全文検索',
+          'FeedIsEmpty': 'フィードが空です。フィードを追加してもう一度お試しください',
+          'refreshFailed': '@count フィードの更新に失敗しました',
+          'refreshSuccess': '更新成功',
+          'allFeeds': '全てのフィード',
+
+          // Route: /add_feed
+          'addFeed': 'フィードに追加',
+          'feedAddress': 'フィードアドレス',
+          'pasteAddress': 'URLを貼り付け',
+          'resloveAddress': 'URLを解析する',
+          'feedAlreadyExists': 'フィードはすでに存在します',
+          'feedResolveError': 'URLの解析に失敗しました',
+          'feedCategory': 'フィードカテゴリ',
+          'defaultCategory': 'デフォルトカテゴリ',
+          'fullText': '全文を取得する',
+          'fullTextInfo': '記事の全文コンテンツを自動的にキャプチャします',
+          'openType': '開き方',
+          'openInApp': '内蔵リーダー',
+          'openInAppTab': '組み込みタブ',
+          'openInBrowser': 'システムブラウザ',
+          'saveFeed': '保存',
+          'deleteFeed': '削除',
+
+          // Route: /edit_feed
+          'editFeed': 'フィードの編集',
+          'feedName': 'フィード名',
+
+          // Route: /setting
+          'moreSetting': '設定',
+
+          // Route: /setting/display
+          'displaySetting': '表示設定',
+          'displaySettingInfo': 'テーマ、アニメーション、スケーリング、言語',
+          'darkMode': 'ダークモード',
+          'followSystem': 'システムに従ってください',
+          'dynamicColor': 'ダイナミックカラー',
+          'dynamicColorInfo': '壁紙に基づいてテーマの色を自動的に調整します',
+          'globalFont': 'グローバルフォント',
+          'defaultFont': 'デフォルトフォント',
+          'importFont': 'インポート',
+          'animationEffect': 'アニメーション効果',
+          'animationEffectInfo': 'アプリケーションを再起動すると有効になります',
+          'smoothScrolling': 'スムーズスクロール',
+          'fadeInAndOut': 'フェードインとフェードアウト',
+          'textScale': '文字サイズ',
+          'textScaleFactor': 'フォントの倍率:',
+          'language': '言語',
+          'systemLanguage': 'システム設定',
+          'zh_CN': '简体中文',
+          'en_US': 'English',
+          'ja_JP': '日本語',
+
+          // Route: /setting/read
+          'readSetting': '読み取り設定',
+          'readSettingInfo': 'フォント、行の高さ、余白、配置',
+          'fontSize': 'フォントサイズ',
+          'lineHeight': '行高',
+          'pagePadding': 'ページ余白',
+          'textAlign': 'テキストの配置',
+          'leftAlign': '左揃え',
+          'rightAlign': '右揃え',
+          'justifyAlign': '両端揃え',
+          'centerAlign': '中央揃え',
+
+          // Route: /setting/resolve
+          'resolveSetting': '解析設定',
+          'resolveSettingInfo': '起動時に更新、ワードをブロック、プロキシを使用',
+          'refreshOnStartup': '起動時に更新',
+          'refreshOnStartupInfo': 'アプリの起動時にフィードを自動的に更新する',
+          'blockWords': 'ブロックワード',
+          'blockWordsInfo': 'キーワードを含む記事をブロックする',
+          'add': '追加',
+          'addBlockWord': 'ブロックワードを追加する',
+          'useProxy': 'プロキシを使用する',
+          'useProxyInfo': 'ネットワークリクエストを行うときにプロキシサーバーを使用する',
+          'useProxyFailedInfo': 'プロキシアドレスとポートを空にすることはできません',
+          'proxyAddress': 'プロキシアドレス',
+          'proxyPort': 'プロキシポート',
+          'notSet': '設定されていません',
+
+          // Route: /setting/data_manage
+          'dataManage': 'データ管理',
+          'dataManageInfo': 'データのインポート、エクスポート、クリア',
+          'importOpml': 'インポートOPMLファイル',
+          'importOpmlInfo': 'OPMLファイルからフィードをインポートする',
+          'exportOpml': 'OPMLのエクスポート',
+          'exportOpmlInfo': 'すべてのフィードをOPMLファイルにエクスポートします',
+
+          // Route: /setting/about
+          'aboutApp': 'アプリケーションについて',
+          'aboutAppInfo': 'バージョン、オープンソースのアドレス、作成者に連絡する',
+          'appInfo': 'Material You スタイリッシュ RSSリーダー',
+          'openSource': 'Github',
+          'contactAuthor': '作者に連絡する',
+        },
       };
 }
