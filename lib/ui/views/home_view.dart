@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:meread/helpers/isar_helper.dart';
 import 'package:meread/helpers/prefs_helper.dart';
@@ -210,21 +209,13 @@ class _HomeViewState extends State<HomeView> {
                     category: category,
                     categoryOnTap: () => c.focusCategory(category),
                     feedOnTap: (feed) => c.focusFeed(feed),
-                    feedOnLongPress: (feed) => _showToast(),
+                    feedOnLongPress: (feed) => c.toEditFeed(feed),
                   ),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  void _showToast() {
-    Fluttertoast.showToast(
-      msg: "hello",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
     );
   }
 }
