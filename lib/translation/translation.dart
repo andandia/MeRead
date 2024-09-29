@@ -134,7 +134,7 @@ class AppTranslation extends Translations {
           'feedCategory': 'フィードカテゴリ',
           'defaultCategory': 'デフォルトカテゴリ',
           'fullText': '全文を取得する',
-          'fullTextInfo': '記事の全文コンテンツを自動的にキャプチャします',
+          'fullTextInfo': '記事の全文コンテンツを自動的に取得します',
           'openType': '開き方',
           'openInApp': '内蔵リーダー',
           'openInAppTab': '組み込みタブ',
