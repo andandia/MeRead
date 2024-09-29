@@ -80,19 +80,24 @@ class EditFeedView extends StatelessWidget {
                   style: TextStyle(color: colorScheme.primary),
                 ),
               ),
-              for (int i = 0; i < 3; i++)
-                RadioListTile(
-                  value: i,
-                  groupValue: c.feed?.openType ?? 0,
-                  title: Text([
-                    'openInApp'.tr,
-                    'openInAppTab'.tr,
-                    'openInBrowser'.tr
-                  ][i]),
-                  onChanged: (value) {
-                    if (value != null) c.updateOpenType(value);
-                  },
+              Obx(
+                () => Column(
+                  children: List<Widget>.generate(3, (i) {
+                    return RadioListTile(
+                      value: i,
+                      groupValue: c.openType.value,
+                      title: Text([
+                        'openInApp'.tr,
+                        'openInAppTab'.tr,
+                        'openInBrowser'.tr
+                      ][i]),
+                      onChanged: (value) {
+                        if (value != null) c.updateOpenType(value);
+                      },
+                    );
+                  }),
                 ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                 child: FilledButton.tonal(
