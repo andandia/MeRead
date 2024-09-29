@@ -91,10 +91,10 @@ class IsarHelper {
           .where()
           .filter()
           .feed((f) => f.idEqualTo(feed.id))
-          .sortByPubDateDesc()
           .findAll();
       result.addAll(posts);
     }
+    result.sort((a, b) => b.pubDate.compareTo(a.pubDate));
     return result;
   }
 
