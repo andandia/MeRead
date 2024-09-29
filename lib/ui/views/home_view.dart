@@ -6,8 +6,10 @@ import 'package:meread/helpers/prefs_helper.dart';
 import 'package:meread/models/category.dart';
 import 'package:meread/models/post.dart';
 import 'package:meread/ui/viewmodels/home_controller.dart';
+import 'package:meread/ui/viewmodels/post/post_controller.dart';
 import 'package:meread/ui/widgets/feed_panel.dart';
 import 'package:meread/ui/widgets/post_card.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -165,11 +167,29 @@ class _HomeViewState extends State<HomeView> {
                   ],
                   child: InkWell(
                     onTap: () {
-                      Get.toNamed('/post', arguments: c.postList[index])!
-                          .then((_) {
-                        c.getPosts();
-                        c.getUnreadCount();
-                      });
+                      if (c.postList[index].feed.value?.openType == 0) {
+                        Get.toNamed('/post', arguments: c.postList[index])!
+                            .then((_) {
+                          c.getPosts();
+                          c.getUnreadCount();
+                        });
+                      } else if (c.postList[index].feed.value?.openType == 1) {
+                        launchUrlString(
+                          c.postList[index].link,
+                          mode: LaunchMode.inAppBrowserView,
+                        );
+                      } else if (c.postList[index].feed.value?.openType == 2) {
+                        launchUrlString(
+                          c.postList[index].link,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      } else {
+                        Get.toNamed('/post', arguments: c.postList[index])!
+                            .then((_) {
+                          c.getPosts();
+                          c.getUnreadCount();
+                        });
+                      }
                     },
                     child: PostCard(post: c.postList[index]),
                   ),
