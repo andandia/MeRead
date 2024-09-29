@@ -9,6 +9,7 @@ class AppTranslation extends Translations {
           'cancel': '取消',
           'open': '开启',
           'close': '关闭',
+          'copied': '複製的',
 
           // Route: /
           'markAllAsRead': '全标已读',
@@ -115,6 +116,7 @@ class AppTranslation extends Translations {
           'cancel': 'キャンセル',
           'open': '開く',
           'close': '閉じる',
+          'copied': 'コピーしました',
 
           // Route: /
           'markAllAsRead': '全て既読にする',

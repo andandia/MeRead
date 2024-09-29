@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:meread/models/feed.dart';
 import 'package:meread/ui/viewmodels/edit_feed/edit_feed_controller.dart';
@@ -30,9 +32,24 @@ class EditFeedView extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: TextField(
-                  controller: TextEditingController(text: feed.url),
-                  enabled: false,
+                child: GestureDetector(
+                  onLongPress: () {
+                    Clipboard.setData(ClipboardData(text: feed.url));
+                    Fluttertoast.showToast(
+                      msg: "copied".tr,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                  },
+                  child: TextField(
+                    controller: TextEditingController(text: feed.url),
+                    enabled: false,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: colorScheme.primary),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
