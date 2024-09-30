@@ -1,4 +1,5 @@
 import 'package:dart_rss/dart_rss.dart';
+import 'package:dart_rss/domain/rss1_item.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:meread/helpers/dio_helper.dart';
@@ -75,13 +76,87 @@ class ResolveHelper {
       final postXmlString = response.data;
       final DateTime? feedLastUpdated = await IsarHelper.getLatesPubDate(feed);
       try {
+        Rss1Feed rss1Feed = Rss1Feed.parse(postXmlString);
+        for (Rss1Item item in rss1Feed.items) {
+          if (!(_parsePubDate(item.dc?.date)
+              .isAfter(feedLastUpdated ?? DateTime(0)))) {
+            break;
+          }
+          _parseRSSPostItemRss1(item, feed);
+        }
+        return true;
+      } catch (e) {
+        try {
+          RssFeed rssFeed = RssFeed.parse(postXmlString);
+          for (RssItem item in rssFeed.items) {
+            if (!(_parsePubDate(item.dc?.date)
+                .isAfter(feedLastUpdated ?? DateTime(0)))) {
+              break;
+            }
+            _parseRSSPostItemRss2(item, feed);
+          }
+          return true;
+        } catch (e) {
+          AtomFeed atomFeed = AtomFeed.parse(postXmlString);
+          for (AtomItem item in atomFeed.items) {
+            if (!(_parsePubDate(item.updated)
+                .isAfter(feedLastUpdated ?? DateTime(0)))) {
+              break;
+            }
+            _parseAtomPostItem(item, feed);
+          }
+          return true;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> _reslovePostRss1(Feed feed) async {
+    try {
+      final response = await DioHelper.get(feed.url);
+      final postXmlString = response.data;
+      final DateTime? feedLastUpdated = await IsarHelper.getLatesPubDate(feed);
+      try {
+        Rss1Feed rss1Feed = Rss1Feed.parse(postXmlString);
+        for (Rss1Item item in rss1Feed.items) {
+          if (!(_parsePubDate(item.dc?.date)
+              .isAfter(feedLastUpdated ?? DateTime(0)))) {
+            break;
+          }
+          _parseRSSPostItemRss1(item, feed);
+        }
+        return true;
+      } catch (e) {
+        AtomFeed atomFeed = AtomFeed.parse(postXmlString);
+        for (AtomItem item in atomFeed.items) {
+          if (!(_parsePubDate(item.updated)
+              .isAfter(feedLastUpdated ?? DateTime(0)))) {
+            break;
+          }
+          _parseAtomPostItem(item, feed);
+        }
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> _reslovePostRss2(Feed feed) async {
+    try {
+      final response = await DioHelper.get(feed.url);
+      final postXmlString = response.data;
+      final DateTime? feedLastUpdated = await IsarHelper.getLatesPubDate(feed);
+      try {
         RssFeed rssFeed = RssFeed.parse(postXmlString);
         for (RssItem item in rssFeed.items) {
           if (!(_parsePubDate(item.pubDate)
               .isAfter(feedLastUpdated ?? DateTime(0)))) {
             break;
           }
-          _parseRSSPostItem(item, feed);
+          _parseRSSPostItemRss2(item, feed);
         }
         return true;
       } catch (e) {
@@ -101,7 +176,27 @@ class ResolveHelper {
   }
 
   /// Use RSS to parse RssItem and save to database
-  static void _parseRSSPostItem(RssItem item, Feed feed) {
+  static void _parseRSSPostItemRss1(Rss1Item item, Feed feed) {
+    String title = item.title!.trim();
+    bool blockStatue = _isBlock(title, item.description ?? '');
+    if (blockStatue) {
+      return;
+    }
+    Post post = Post(
+      title: title,
+      link: item.link!,
+      content: item.description ?? '',
+      pubDate: _parsePubDate(item.dc?.date),
+      read: false,
+      favorite: false,
+      fullText: feed.fullText,
+    );
+    post.feed.value = feed;
+    IsarHelper.savePost(post);
+  }
+
+  /// Use RSS to parse RssItem and save to database
+  static void _parseRSSPostItemRss2(RssItem item, Feed feed) {
     String title = item.title!.trim();
     bool blockStatue = _isBlock(title, item.description ?? '');
     if (blockStatue) {
