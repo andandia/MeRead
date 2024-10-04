@@ -89,7 +89,7 @@ class ResolveHelper {
         try {
           RssFeed rssFeed = RssFeed.parse(postXmlString);
           for (RssItem item in rssFeed.items) {
-            if (!(_parsePubDate(item.dc?.date)
+            if (!(_parsePubDate(item.pubDate)
                 .isAfter(feedLastUpdated ?? DateTime(0)))) {
               break;
             }
@@ -107,68 +107,6 @@ class ResolveHelper {
           }
           return true;
         }
-      }
-    } catch (e) {
-      return false;
-    }
-  }
-
-  static Future<bool> _reslovePostRss1(Feed feed) async {
-    try {
-      final response = await DioHelper.get(feed.url);
-      final postXmlString = response.data;
-      final DateTime? feedLastUpdated = await IsarHelper.getLatesPubDate(feed);
-      try {
-        Rss1Feed rss1Feed = Rss1Feed.parse(postXmlString);
-        for (Rss1Item item in rss1Feed.items) {
-          if (!(_parsePubDate(item.dc?.date)
-              .isAfter(feedLastUpdated ?? DateTime(0)))) {
-            break;
-          }
-          _parseRSSPostItemRss1(item, feed);
-        }
-        return true;
-      } catch (e) {
-        AtomFeed atomFeed = AtomFeed.parse(postXmlString);
-        for (AtomItem item in atomFeed.items) {
-          if (!(_parsePubDate(item.updated)
-              .isAfter(feedLastUpdated ?? DateTime(0)))) {
-            break;
-          }
-          _parseAtomPostItem(item, feed);
-        }
-        return true;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
-
-  static Future<bool> _reslovePostRss2(Feed feed) async {
-    try {
-      final response = await DioHelper.get(feed.url);
-      final postXmlString = response.data;
-      final DateTime? feedLastUpdated = await IsarHelper.getLatesPubDate(feed);
-      try {
-        RssFeed rssFeed = RssFeed.parse(postXmlString);
-        for (RssItem item in rssFeed.items) {
-          if (!(_parsePubDate(item.pubDate)
-              .isAfter(feedLastUpdated ?? DateTime(0)))) {
-            break;
-          }
-          _parseRSSPostItemRss2(item, feed);
-        }
-        return true;
-      } catch (e) {
-        AtomFeed atomFeed = AtomFeed.parse(postXmlString);
-        for (AtomItem item in atomFeed.items) {
-          if (!(_parsePubDate(item.updated)
-              .isAfter(feedLastUpdated ?? DateTime(0)))) {
-            break;
-          }
-          _parseAtomPostItem(item, feed);
-        }
-        return true;
       }
     } catch (e) {
       return false;
