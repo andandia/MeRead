@@ -73,7 +73,17 @@ class OpmlHelper {
 
   /// Export all Feeds as a Opml file
   static Future<void> exportOpml() async {
+    RxList<Feed> feeds = <Feed>[].obs;
+    feeds.value = await IsarHelper.getFeeds();
     final Map<String, List<Feed>> feedMap = {};
+    for (var feed in feeds) {
+      String categoryKey =
+          feed.category.value?.name ?? '未分類'; // カテゴリ名を取得、未分類の場合は'未分類'を設定
+      if (!feedMap.containsKey(categoryKey)) {
+        feedMap[categoryKey] = []; // カテゴリが存在しない場合、新しいリストを作成
+      }
+      feedMap[categoryKey]!.add(feed); // カテゴリにフィードを追加
+    }
     final head = OpmlHeadBuilder().title('Feeds From MeRead').build();
     final body = <OpmlOutline>[];
     for (var category in feedMap.keys) {
