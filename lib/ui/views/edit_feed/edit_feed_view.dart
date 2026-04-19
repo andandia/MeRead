@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:meread/models/feed.dart';
 import 'package:meread/ui/viewmodels/edit_feed/edit_feed_controller.dart';
@@ -30,9 +32,24 @@ class EditFeedView extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: TextField(
-                  controller: TextEditingController(text: feed.url),
-                  enabled: false,
+                child: GestureDetector(
+                  onLongPress: () {
+                    Clipboard.setData(ClipboardData(text: feed.url));
+                    Fluttertoast.showToast(
+                      msg: "copied".tr,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                  },
+                  child: TextField(
+                    controller: TextEditingController(text: feed.url),
+                    enabled: false,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: colorScheme.primary),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
@@ -80,19 +97,24 @@ class EditFeedView extends StatelessWidget {
                   style: TextStyle(color: colorScheme.primary),
                 ),
               ),
-              for (int i = 0; i < 3; i++)
-                RadioListTile(
-                  value: i,
-                  groupValue: c.feed?.openType ?? 0,
-                  title: Text([
-                    'openInApp'.tr,
-                    'openInAppTab'.tr,
-                    'openInBrowser'.tr
-                  ][i]),
-                  onChanged: (value) {
-                    if (value != null) c.updateOpenType(value);
-                  },
+              Obx(
+                () => Column(
+                  children: List<Widget>.generate(3, (i) {
+                    return RadioListTile(
+                      value: i,
+                      groupValue: c.openType.value,
+                      title: Text([
+                        'openInApp'.tr,
+                        'openInAppTab'.tr,
+                        'openInBrowser'.tr
+                      ][i]),
+                      onChanged: (value) {
+                        if (value != null) c.updateOpenType(value);
+                      },
+                    );
+                  }),
                 ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                 child: FilledButton.tonal(

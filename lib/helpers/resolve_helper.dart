@@ -1,4 +1,5 @@
 import 'package:dart_rss/dart_rss.dart';
+import 'package:dart_rss/domain/rss1_item.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:meread/helpers/dio_helper.dart';
@@ -69,31 +70,44 @@ class ResolveHelper {
   }
 
   /// Parse a Feed to get update
+  /// 各投稿を解析するメイン処理
   static Future<bool> _reslovePost(Feed feed) async {
     try {
       final response = await DioHelper.get(feed.url);
       final postXmlString = response.data;
       final DateTime? feedLastUpdated = await IsarHelper.getLatesPubDate(feed);
       try {
-        RssFeed rssFeed = RssFeed.parse(postXmlString);
-        for (RssItem item in rssFeed.items) {
-          if (!(_parsePubDate(item.pubDate)
+        Rss1Feed rss1Feed = Rss1Feed.parse(postXmlString);
+        for (Rss1Item item in rss1Feed.items) {
+          if (!(_parsePubDate(item.dc?.date)
               .isAfter(feedLastUpdated ?? DateTime(0)))) {
             break;
           }
-          _parseRSSPostItem(item, feed);
+          _parseRSSPostItemRss1(item, feed);
         }
         return true;
       } catch (e) {
-        AtomFeed atomFeed = AtomFeed.parse(postXmlString);
-        for (AtomItem item in atomFeed.items) {
-          if (!(_parsePubDate(item.updated)
-              .isAfter(feedLastUpdated ?? DateTime(0)))) {
-            break;
+        try {
+          RssFeed rssFeed = RssFeed.parse(postXmlString);
+          for (RssItem item in rssFeed.items) {
+            if (!(_parsePubDate(item.pubDate)
+                .isAfter(feedLastUpdated ?? DateTime(0)))) {
+              break;
+            }
+            _parseRSSPostItemRss2(item, feed);
           }
-          _parseAtomPostItem(item, feed);
+          return true;
+        } catch (e) {
+          AtomFeed atomFeed = AtomFeed.parse(postXmlString);
+          for (AtomItem item in atomFeed.items) {
+            if (!(_parsePubDate(item.updated)
+                .isAfter(feedLastUpdated ?? DateTime(0)))) {
+              break;
+            }
+            _parseAtomPostItem(item, feed);
+          }
+          return true;
         }
-        return true;
       }
     } catch (e) {
       return false;
@@ -101,7 +115,29 @@ class ResolveHelper {
   }
 
   /// Use RSS to parse RssItem and save to database
-  static void _parseRSSPostItem(RssItem item, Feed feed) {
+  /// Rss v1の場合のパース処理
+  static void _parseRSSPostItemRss1(Rss1Item item, Feed feed) {
+    String title = item.title!.trim();
+    bool blockStatue = _isBlock(title, item.description ?? '');
+    if (blockStatue) {
+      return;
+    }
+    Post post = Post(
+      title: title,
+      link: item.link!,
+      content: item.description ?? '',
+      pubDate: _parsePubDate(item.dc?.date),
+      read: false,
+      favorite: false,
+      fullText: feed.fullText,
+    );
+    post.feed.value = feed;
+    IsarHelper.savePost(post);
+  }
+
+  /// Use RSS to parse RssItem and save to database
+  /// RSS2の場合のパース処理
+  static void _parseRSSPostItemRss2(RssItem item, Feed feed) {
     String title = item.title!.trim();
     bool blockStatue = _isBlock(title, item.description ?? '');
     if (blockStatue) {
@@ -121,6 +157,7 @@ class ResolveHelper {
   }
 
   /// Use Atom to parse RssItem and save to database
+  /// Atomの場合のパース処理
   static void _parseAtomPostItem(AtomItem item, Feed feed) {
     String title = item.title!.trim();
     bool blockStatue = _isBlock(title, item.content ?? '');
@@ -141,6 +178,7 @@ class ResolveHelper {
   }
 
   /// Determine whether the Post is blocked by title and content
+  /// タイトルにNGワードが無いかチェック
   static bool _isBlock(String title, String content) {
     List<String> blockList = PrefsHelper.blockList;
     bool blockStatue = false;
@@ -154,6 +192,7 @@ class ResolveHelper {
   }
 
   /// Post pubDate format conversion
+  /// 投稿日のパース処理
   static DateTime _parsePubDate(String? str) {
     if (str == null) {
       return DateTime.now();

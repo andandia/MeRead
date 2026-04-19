@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:html/dom.dart';
+import 'package:html/parser.dart';
 import 'package:isar/isar.dart';
 import 'package:meread/helpers/log_helper.dart';
 import 'package:meread/models/category.dart';
@@ -84,8 +86,10 @@ class IsarHelper {
   }
 
   /// Get the associated Post from the Isar database through List<Feed>
+  /// List<Feed> を通じて Isar データベースから関連する投稿を取得します。
+  /// ここが各投稿を画面表示用にする処理
   static Future<List<Post>> getPostsByFeeds(List<Feed> feeds) async {
-    final List<Post> result = [];
+    List<Post> result = [];
     for (final Feed feed in feeds) {
       final List<Post> posts = await _isar.posts
           .where()
@@ -94,6 +98,16 @@ class IsarHelper {
           .findAll();
       result.addAll(posts);
     }
+
+    // タイトルの重複を排除
+    final Map<String, Post> uniquePostsMap = {
+      for (var post in result) post.title: post
+    };
+    result = uniquePostsMap.values.toList();
+
+    result.sort((a, b) => b.pubDate.compareTo(a.pubDate));
+
+    result = getDescription(result);
     return result;
   }
 
@@ -140,6 +154,22 @@ class IsarHelper {
   static Future<Category?> getCategoryByName(String name) async {
     final Category? result =
         await _isar.categorys.where().filter().nameEqualTo(name).findFirst();
+    return result;
+  }
+
+  /// RSSのdescription(ここではcontent)がhtmlなら中の文字列だけを抽出する
+  static List<Post> getDescription(List<Post> list) {
+    List<Post> result = list;
+
+    for (Post post in list) {
+      try {
+        Document document = parse(post.content);
+        post.content = document.body!.text;
+      } catch (e) {
+        continue;
+      }
+    }
+
     return result;
   }
 }

@@ -16,6 +16,7 @@ class DisplaySettingController extends GetxController {
         'system',
         'zh_CN',
         'en_US',
+        'ja_JP',
       ];
 
   void changeThemeMode(int value) {

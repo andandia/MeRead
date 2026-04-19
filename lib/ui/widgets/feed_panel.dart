@@ -7,12 +7,14 @@ class FeedPanel extends StatefulWidget {
   final Category category;
   final Function() categoryOnTap;
   final Function(Feed feed) feedOnTap;
+  final Function(Feed feed) feedOnLongPress;
 
   const FeedPanel({
     super.key,
     required this.category,
     required this.categoryOnTap,
     required this.feedOnTap,
+    required this.feedOnLongPress,
   });
 
   @override
@@ -66,6 +68,7 @@ class _FeedPanelState extends State<FeedPanel> {
                                 dense: true,
                                 visualDensity: VisualDensity.compact,
                                 onTap: () => widget.feedOnTap(feed),
+                                onLongPress: () => widget.feedOnLongPress(feed),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24),
                                 ),
