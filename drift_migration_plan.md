@@ -21,10 +21,10 @@
 
 ### Step 2: テーブル定義（スキーマ）の作成
 Isarのモデル（Category, Feed, Post）をDriftのTableクラスとして再定義します。
-- [ ] `lib/db/tables.dart`（新規作成）などにテーブル定義を作成する。
-  - [ ] `Categories` テーブルの定義（`id`, `name`, `createdAt`, `updatedAt`）。
-  - [ ] `Feeds` テーブルの定義（`id`, `categoryId` (外部キー), `title`, `url`, `description`, `fullText`, `openType`）。
-  - [ ] `Posts` テーブルの定義（`id`, `feedId` (外部キー), `title`, `link`, `content`, `pubDate`, `read`, `favorite`, `fullText`）。
+- [x] `lib/db/tables.dart`（新規作成）などにテーブル定義を作成する。
+  - [x] `Categories` テーブルの定義（`id`, `name`, `createdAt`, `updatedAt`）。
+  - [x] `Feeds` テーブルの定義（`id`, `categoryId` (外部キー), `title`, `url`, `description`, `fullText`, `openType`）。
+  - [x] `Posts` テーブルの定義（`id`, `feedId` (外部キー), `title`, `link`, `content`, `pubDate`, `read`, `favorite`, `fullText`）。
 
 ### Step 3: DriftDatabaseクラスの作成とクエリの実装
 Driftデータベースを管理するクラスと、必要なデータベース操作（CRUD）を実装します。
