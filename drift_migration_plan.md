@@ -11,13 +11,13 @@
 ## 移行ステップ（TODOリスト）
 
 ### Step 1: パッケージの入れ替えと設定
-- [ ] `pubspec.yaml` からIsar関連の依存関係を削除する。
+- [x] `pubspec.yaml` からIsar関連の依存関係を削除する。
   - `isar`, `isar_flutter_libs`
   - `dev_dependencies` の `isar_generator`
-- [ ] `pubspec.yaml` にDrift関連の依存関係を追加する。
+- [x] `pubspec.yaml` にDrift関連の依存関係を追加する。
   - `drift`, `sqlite3_flutter_libs`, `path_provider`, `path`
   - `dev_dependencies` に `drift_dev`, `build_runner` (すでにあれば更新確認)
-- [ ] `flutter pub get` を実行してパッケージを同期する。
+- [x] `flutter pub get` を実行してパッケージを同期する。
 
 ### Step 2: テーブル定義（スキーマ）の作成
 Isarのモデル（Category, Feed, Post）をDriftのTableクラスとして再定義します。
