@@ -35,9 +35,6 @@ add package:
     @flutter pub add {{ package }}
 
 # Build generated files
-isar:
-    @echo "------------------------------"
-    @echo "Building Isar......."
     @flutter pub run build_runner build
 
 # Build Android apk
