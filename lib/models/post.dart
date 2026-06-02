@@ -1,12 +1,11 @@
-import 'package:isar/isar.dart';
 import 'package:meread/models/feed.dart';
+import 'package:meread/models/model_link.dart';
+import 'package:meread/db/database.dart';
+import 'package:drift/drift.dart';
 
-part 'post.g.dart';
-
-@collection
-class Post {
-  Id? id = Isar.autoIncrement;
-  final feed = IsarLink<Feed>();
+class PostModel {
+  int? id;
+  final feed = ModelLink<FeedModel>();
   String title;
   String link;
   String content;
@@ -15,7 +14,7 @@ class Post {
   bool favorite;
   bool fullText;
 
-  Post({
+  PostModel({
     this.id,
     required this.title,
     required this.link,
@@ -25,4 +24,35 @@ class Post {
     required this.favorite,
     required this.fullText,
   });
+
+  factory PostModel.fromDb(Post dbPost, {FeedModel? feedModel}) {
+    final postModel = PostModel(
+      id: dbPost.id,
+      title: dbPost.title,
+      link: dbPost.link,
+      content: dbPost.content,
+      pubDate: dbPost.pubDate,
+      read: dbPost.read,
+      favorite: dbPost.favorite,
+      fullText: dbPost.fullText,
+    );
+    if (feedModel != null) {
+      postModel.feed.value = feedModel;
+    }
+    return postModel;
+  }
+
+  PostsCompanion toDb() {
+    return PostsCompanion(
+      id: id == null ? const Value.absent() : Value(id!),
+      feedId: feed.value?.id == null ? const Value.absent() : Value(feed.value!.id!),
+      title: Value(title),
+      link: Value(link),
+      content: Value(content),
+      pubDate: Value(pubDate),
+      read: Value(read),
+      favorite: Value(favorite),
+      fullText: Value(fullText),
+    );
+  }
 }

@@ -10,9 +10,9 @@ class EditFeedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Feed feed = Get.arguments;
+    FeedModel feed = Get.arguments;
     final c = Get.put(EditFeedCntroller());
-    c.initFeed(feed);
+    c.initFeedModel(feed);
     final ColorScheme colorScheme = Get.theme.colorScheme;
     return Scaffold(
       body: CustomScrollView(
@@ -118,15 +118,15 @@ class EditFeedView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                 child: FilledButton.tonal(
-                  onPressed: c.saveFeed,
-                  child: Text('saveFeed'.tr),
+                  onPressed: c.saveFeedModel,
+                  child: Text('saveFeedModel'.tr),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 6, 12, 48),
                 child: FilledButton.tonal(
-                  onPressed: c.deleteFeed,
-                  child: Text('deleteFeed'.tr),
+                  onPressed: c.deleteFeedModel,
+                  child: Text('deleteFeedModel'.tr),
                 ),
               ),
             ],

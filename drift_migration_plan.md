@@ -41,20 +41,20 @@ Driftデータベースを管理するクラスと、必要なデータベース
 
 ### Step 4: 既存モデルのDrift DataClassへの置き換え（または変換ロジックの実装）
 Isar固有のモデルファイル（`lib/models/*.dart`）を、Driftが生成するDataClassに置き換えるか、UI層向けのドメインモデルとして維持しつつ相互変換処理を入れます。
-- [ ] UIや別ロジックが直接 `lib/models/` のクラスを参照している部分を、Driftで生成されたクラス（`Category`, `Feed`, `Post` など。重複回避に注意）に切り替える方針を確定する。
-- [ ] 既存の `lib/models/category.dart`, `lib/models/feed.dart`, `lib/models/post.dart` から `@collection`, `IsarLink`, `Id` などのIsar固有アノテーションを削除するか、ファイルごと削除してDriftの生成クラスに依存させる。
+- [x] UIや別ロジックが直接 `lib/models/` のクラスを参照している部分を、Driftで生成されたクラス（`Category`, `Feed`, `Post` など。重複回避に注意）に切り替える方針を確定する。
+- [x] 既存の `lib/models/category.dart`, `lib/models/feed.dart`, `lib/models/post.dart` から `@collection`, `IsarLink`, `Id` などのIsar固有アノテーションを削除するか、ファイルごと削除してDriftの生成クラスに依存させる。
   - *注: Isarの `IsarLink` で解決されていた「FeedがCategoryを持つ」「PostがFeedを持つ」というオブジェクトネストについては、JOINを利用したクエリとモデルの再構成（例: `FeedWithCategory` のようなクラスの定義）が必要になります。*
 
 ### Step 5: DBHelper（旧 IsarHelper）のリファクタリング
-- [ ] `lib/helpers/isar_helper.dart` を `lib/helpers/db_helper.dart` にリネーム（または新設）する。
-- [ ] `IsarHelper` クラス名を `DbHelper` に変更する。
-- [ ] 各スタティックメソッド（`init()`, `getFeeds()`, `saveFeed()`, `getPostsByFeeds()` 等）の内部実装を、Step 3で作成した `AppDatabase` のメソッド呼び出しに置き換える。
-- [ ] トランザクション処理（`_isar.writeTxnSync()`）を、Driftのトランザクション（`transaction()` または `batch()`）に置き換える。同期処理（Sync）から非同期処理（Future）への変更に伴い、戻り値の型を適宜修正する。
+- [x] `lib/helpers/isar_helper.dart` を `lib/helpers/db_helper.dart` にリネーム（または新設）する。
+- [x] `IsarHelper` クラス名を `DbHelper` に変更する。
+- [x] 各スタティックメソッド（`init()`, `getFeeds()`, `saveFeed()`, `getPostsByFeeds()` 等）の内部実装を、Step 3で作成した `AppDatabase` のメソッド呼び出しに置き換える。
+- [x] トランザクション処理（`_isar.writeTxnSync()`）を、Driftのトランザクション（`transaction()` または `batch()`）に置き換える。同期処理（Sync）から非同期処理（Future）への変更に伴い、戻り値の型を適宜修正する。
 
 ### Step 6: アプリケーション全体のコンパイルエラーの修正
 データベースアクセス層とモデルの非同期化（Futureベース）および構造変化により、UI側のコード（ProviderやControllerなど）でエラーが発生します。
-- [ ] 各画面や状態管理クラス（例: `lib/ui/`, `lib/helpers/` 内の他のファイル等）において、`DbHelper` のメソッド呼び出しが `Future` になったことに合わせた `await` の追加や、モデル構造変更（`IsarLink` へのアクセスをなくし、JOIN結果を使う等）への対応を行う。
-- [ ] 全体のコンパイルエラーを取り除く。
+- [x] 各画面や状態管理クラス（例: `lib/ui/`, `lib/helpers/` 内の他のファイル等）において、`DbHelper` のメソッド呼び出しが `Future` になったことに合わせた `await` の追加や、モデル構造変更（`IsarLink` へのアクセスをなくし、JOIN結果を使う等）への対応を行う。
+- [x] 全体のコンパイルエラーを取り除く。
 
 ### Step 7: 既存のIsar関連不要ファイルの削除
 - [ ] `lib/models/category.g.dart`, `feed.g.dart`, `post.g.dart` などのIsarによる自動生成ファイルを削除する。

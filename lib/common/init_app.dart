@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meread/helpers/dio_helper.dart';
 import 'package:meread/helpers/font_helper.dart';
-import 'package:meread/helpers/isar_helper.dart';
+import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/helpers/log_helper.dart';
 import 'package:meread/helpers/prefs_helper.dart';
 
@@ -24,7 +24,7 @@ Future<void> initApp() async {
 
   LogHelper.init();
   await PrefsHelper.init();
-  await IsarHelper.init();
+  await DbHelper.init();
   DioHelper.init();
 
   FontHelper.readThemeFont();

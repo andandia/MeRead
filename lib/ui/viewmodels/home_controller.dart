@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:meread/helpers/isar_helper.dart';
+import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/helpers/resolve_helper.dart';
 import 'package:meread/models/category.dart';
 import 'package:meread/models/feed.dart';
 import 'package:meread/models/post.dart';
 
 class HomeController extends GetxController {
-  RxList<Category> categorys = <Category>[].obs;
-  RxMap<Feed, int> unreadCount = <Feed, int>{}.obs;
-  RxList<Feed> feeds = <Feed>[].obs;
-  RxList<Post> postList = <Post>[].obs;
+  RxList<CategoryModel> categorys = <CategoryModel>[].obs;
+  RxMap<FeedModel, int> unreadCount = <FeedModel, int>{}.obs;
+  RxList<FeedModel> feeds = <FeedModel>[].obs;
+  RxList<PostModel> postList = <PostModel>[].obs;
   RxBool onlyUnread = false.obs;
   RxBool onlyFavorite = false.obs;
   RxString appBarTitle = 'MeRead'.tr.obs;
@@ -26,15 +26,15 @@ class HomeController extends GetxController {
   }
 
   Future<void> getFeeds() async {
-    feeds.value = await IsarHelper.getFeeds();
-    categorys.value = await IsarHelper.getCategorys();
+    feeds.value = await DbHelper.getFeeds();
+    categorys.value = await DbHelper.getCategorys();
     appBarTitle.value = 'MeRead'.tr;
   }
 
   Future<void> getUnreadCount() async {
-    final List<Post> posts = await IsarHelper.getPosts();
-    final Map<Feed, int> result = {};
-    for (final Feed feed in feeds) {
+    final List<PostModel> posts = await DbHelper.getPosts();
+    final Map<FeedModel, int> result = {};
+    for (final FeedModel feed in feeds) {
       final int count =
           posts.where((p) => p.feed.value?.id == feed.id && !p.read).length;
       result[feed] = count;
@@ -43,7 +43,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> getPosts() async {
-    postList.value = await IsarHelper.getPostsByFeeds(feeds);
+    postList.value = await DbHelper.getPostsByFeeds(feeds);
   }
 
   Future<void> refreshPosts() async {
@@ -63,7 +63,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> focusAllFeeds() async {
-    feeds.value = await IsarHelper.getFeeds();
+    feeds.value = await DbHelper.getFeeds();
     await getPosts();
     onlyUnread.value = false;
     onlyFavorite.value = false;
@@ -72,7 +72,7 @@ class HomeController extends GetxController {
   }
 
   // Focus on a category
-  Future<void> focusCategory(Category category) async {
+  Future<void> focusCategoryModel(CategoryModel category) async {
     feeds.value = category.feeds.toList();
     await getPosts();
     onlyUnread.value = false;
@@ -82,7 +82,7 @@ class HomeController extends GetxController {
   }
 
   // Focus on a feed
-  Future<void> focusFeed(Feed feed) async {
+  Future<void> focusFeedModel(FeedModel feed) async {
     feeds.value = [feed];
     await getPosts();
     onlyUnread.value = false;
@@ -99,7 +99,7 @@ class HomeController extends GetxController {
     } else {
       onlyUnread.value = true;
       onlyFavorite.value = false;
-      postList.value = (await IsarHelper.getPostsByFeeds(feeds))
+      postList.value = (await DbHelper.getPostsByFeeds(feeds))
           .where((p) => p.read == false)
           .toList();
     }
@@ -113,27 +113,27 @@ class HomeController extends GetxController {
     } else {
       onlyFavorite.value = true;
       onlyUnread.value = false;
-      postList.value = (await IsarHelper.getPostsByFeeds(feeds))
+      postList.value = (await DbHelper.getPostsByFeeds(feeds))
           .where((p) => p.favorite)
           .toList();
     }
   }
 
-  // Update a Post read status
-  void updateReadStatus(Post post) {
+  // Update a PostModel read status
+  void updateReadStatus(PostModel post) {
     final int index = postList.indexOf(post);
-    IsarHelper.updatePostRead(post);
+    DbHelper.updatePostRead(post);
     postList[index] = post;
   }
 
   // Mark all posts as read
   void markAllRead() {
-    IsarHelper.markAllRead(postList);
+    DbHelper.markAllRead(postList);
     getPosts();
   }
 
   // Go to add feed view
-  void toAddFeed() {
+  void toAddFeedModel() {
     Get.toNamed('/addFeed')?.then((_) => getFeeds().then((_) {
           getPosts();
           getUnreadCount();
@@ -149,7 +149,7 @@ class HomeController extends GetxController {
   }
 
   // Go to edit feed view
-  void toEditFeed(Feed value) {
+  void toEditFeedModel(FeedModel value) {
     Get.toNamed('/editFeed', arguments: value)
         ?.then((_) => getFeeds().then((_) {
               getPosts();

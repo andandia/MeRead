@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:meread/models/post.dart';
 
 class PostCard extends StatelessWidget {
-  final Post post;
+  final PostModel post;
   const PostCard({super.key, required this.post});
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:meread/helpers/isar_helper.dart';
+import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/models/category.dart';
 import 'package:meread/models/feed.dart';
 
@@ -9,9 +9,9 @@ class EditFeedCntroller extends GetxController {
   RxInt openType = 0.obs;
   final titleController = TextEditingController();
   final categoryController = TextEditingController();
-  Feed? feed;
+  FeedModel? feed;
 
-  void initFeed(Feed value) {
+  void initFeedModel(FeedModel value) {
     fullText.value = value.fullText;
     openType.value = value.openType;
     titleController.text = value.title;
@@ -27,8 +27,8 @@ class EditFeedCntroller extends GetxController {
     openType.value = value;
   }
 
-  Future<void> saveFeed() async {
-    final newFeed = Feed(
+  Future<void> saveFeedModel() async {
+    final newFeedModel = FeedModel(
       id: feed?.id,
       title: titleController.text,
       url: feed?.url ?? '',
@@ -36,23 +36,23 @@ class EditFeedCntroller extends GetxController {
       fullText: fullText.value,
       openType: openType.value,
     );
-    final Category category =
-        await IsarHelper.getCategoryByName(categoryController.text) ??
-            Category(
+    final CategoryModel category =
+        await DbHelper.getCategoryByName(categoryController.text) ??
+            CategoryModel(
               name: categoryController.text,
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
             );
-    newFeed.category.value = category;
-    IsarHelper.saveFeed(newFeed);
+    newFeedModel.category.value = category;
+    DbHelper.saveFeed(newFeedModel);
     Get.back();
   }
 
-  void deleteFeed() {
+  void deleteFeedModel() {
     if (feed == null || feed?.id == null) {
       Get.back();
     } else {
-      IsarHelper.deleteFeed(feed!);
+      DbHelper.deleteFeed(feed!);
       Get.back();
     }
   }

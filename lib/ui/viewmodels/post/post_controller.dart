@@ -2,18 +2,18 @@ import 'package:get/get.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:html_main_element/html_main_element.dart';
 import 'package:meread/helpers/dio_helper.dart';
-import 'package:meread/helpers/isar_helper.dart';
+import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/helpers/log_helper.dart';
 import 'package:meread/models/post.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PostController extends GetxController {
-  late Rx<Post> post;
+  late Rx<PostModel> post;
   RxBool fullTexting = false.obs;
 
-  PostController(Post p) {
+  PostController(PostModel p) {
     p.read = true;
-    IsarHelper.savePost(p);
+    DbHelper.savePost(p);
     post = p.obs;
     if ((post.value.feed.value?.fullText ?? false) && !post.value.fullText) {
       fullTexting.value = true;
@@ -37,7 +37,7 @@ class PostController extends GetxController {
       final document = html_parser.parse(response.data.toString());
       if (document.documentElement == null) return;
       final mainElement = readabilityMainElement(document.documentElement!);
-      post.value = Post(
+      post.value = PostModel(
         id: post.value.id,
         title: post.value.title,
         link: post.value.link,
@@ -48,7 +48,7 @@ class PostController extends GetxController {
         fullText: true,
       )..feed.value = post.value.feed.value;
       fullTexting.value = false;
-      IsarHelper.savePost(post.value);
+      DbHelper.savePost(post.value);
     } catch (e) {
       LogHelper.e(e);
     }
@@ -57,12 +57,12 @@ class PostController extends GetxController {
   // 标记为未读
   void markAsUnread() {
     post.value.read = false;
-    IsarHelper.savePost(post.value);
+    DbHelper.savePost(post.value);
   }
 
   // 更改收藏状态
   void changeFavorite() {
-    post.value = Post(
+    post.value = PostModel(
       id: post.value.id,
       title: post.value.title,
       link: post.value.link,
@@ -72,6 +72,6 @@ class PostController extends GetxController {
       favorite: !post.value.favorite,
       fullText: post.value.fullText,
     )..feed.value = post.value.feed.value;
-    IsarHelper.savePost(post.value);
+    DbHelper.savePost(post.value);
   }
 }

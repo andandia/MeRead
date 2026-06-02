@@ -1,3 +1,4 @@
+// @dart=3.0
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -8,16 +9,16 @@ import 'package:meread/db/tables.dart';
 
 part 'database.g.dart';
 
-class FeedWithCategory {
+class FeedWithCategoryModel {
   final Feed feed;
   final Category? category;
-  FeedWithCategory(this.feed, this.category);
+  FeedWithCategoryModel(this.feed, this.category);
 }
 
-class PostWithFeed {
+class PostWithFeedModel {
   final Post post;
   final Feed? feed;
-  PostWithFeed(this.post, this.feed);
+  PostWithFeedModel(this.post, this.feed);
 }
 
 LazyDatabase _openConnection() {
@@ -53,19 +54,19 @@ class AppDatabase extends _$AppDatabase {
     return (select(categories)..where((t) => t.name.equals(name))).getSingleOrNull();
   }
 
-  Future<int> saveCategory(CategoriesCompanion entry) {
+  Future<int> saveCategoryModel(CategoriesCompanion entry) {
     return into(categories).insert(entry, mode: InsertMode.insertOrReplace);
   }
 
   // --- Feeds ---
-  Future<List<FeedWithCategory>> getFeedsWithCategory() async {
+  Future<List<FeedWithCategoryModel>> getFeedsWithCategoryModel() async {
     final query = select(feeds).join([
       leftOuterJoin(categories, categories.id.equalsExp(feeds.categoryId)),
     ]);
 
     final result = await query.get();
     return result.map((row) {
-      return FeedWithCategory(
+      return FeedWithCategoryModel(
         row.readTable(feeds),
         row.readTableOrNull(categories),
       );
@@ -74,7 +75,7 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Feed>> getFeeds() => select(feeds).get();
 
-  Future<int> saveFeed(FeedsCompanion entry) {
+  Future<int> saveFeedModel(FeedsCompanion entry) {
     return into(feeds).insert(entry, mode: InsertMode.insertOrReplace);
   }
 
@@ -82,7 +83,7 @@ class AppDatabase extends _$AppDatabase {
     return (select(feeds)..where((t) => t.url.equals(url))).getSingleOrNull();
   }
 
-  Future<void> deleteFeed(Feed feed) async {
+  Future<void> deleteFeedModel(Feed feed) async {
     await transaction(() async {
       await (delete(posts)..where((t) => t.feedId.equals(feed.id))).go();
       await (delete(feeds)..where((t) => t.id.equals(feed.id))).go();
@@ -90,14 +91,14 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // --- Posts ---
-  Future<List<PostWithFeed>> getPostsWithFeed() async {
+  Future<List<PostWithFeedModel>> getPostsWithFeedModel() async {
     final query = select(posts).join([
       leftOuterJoin(feeds, feeds.id.equalsExp(posts.feedId)),
     ]);
 
     final result = await query.get();
     return result.map((row) {
-      return PostWithFeed(
+      return PostWithFeedModel(
         row.readTable(posts),
         row.readTableOrNull(feeds),
       );
@@ -106,7 +107,7 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Post>> getPosts() => select(posts).get();
 
-  Future<int> savePost(PostsCompanion entry) {
+  Future<int> savePostModel(PostsCompanion entry) {
     return into(posts).insert(entry, mode: InsertMode.insertOrReplace);
   }
 
