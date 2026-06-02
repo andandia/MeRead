@@ -14,7 +14,7 @@ class PostView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //フィードをタッチして個別ページを開いたときに生成
-    final Post p = Get.arguments;
+    final PostModel p = Get.arguments;
     final c = Get.put(PostController(p));
     return Scaffold(
       appBar: AppBar(

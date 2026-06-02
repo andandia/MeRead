@@ -1,3 +1,4 @@
+// @dart=3.0
 import 'package:drift/drift.dart';
 
 @DataClassName('Category')

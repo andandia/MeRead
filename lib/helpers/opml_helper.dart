@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:meread/helpers/isar_helper.dart';
+import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/helpers/log_helper.dart';
 import 'package:meread/helpers/resolve_helper.dart';
 import 'package:meread/models/category.dart';
@@ -73,9 +73,9 @@ class OpmlHelper {
 
   /// Export all Feeds as a Opml file
   static Future<void> exportOpml() async {
-    RxList<Feed> feeds = <Feed>[].obs;
-    feeds.value = await IsarHelper.getFeeds();
-    final Map<String, List<Feed>> feedMap = {};
+    RxList<FeedModel> feeds = <FeedModel>[].obs;
+    feeds.value = await DbHelper.getFeeds();
+    final Map<String, List<FeedModel>> feedMap = {};
     for (var feed in feeds) {
       String categoryKey =
           feed.category.value?.name ?? '未分類'; // カテゴリ名を取得、未分類の場合は'未分類'を設定
@@ -135,21 +135,21 @@ class OpmlHelper {
       opml.body.map(
         (categoryOpml) async {
           final String? categoryName = categoryOpml.title ?? categoryOpml.text;
-          final Category? category =
-              await IsarHelper.getCategoryByName(categoryName!);
+          final CategoryModel? category =
+              await DbHelper.getCategoryByName(categoryName!);
           await Future.wait(
             categoryOpml.children!.map(
               (opmlOutline) async {
                 allCount++;
-                if (await IsarHelper.isExistsFeed(opmlOutline.xmlUrl!) ==
+                if (await DbHelper.isExistsFeed(opmlOutline.xmlUrl!) ==
                     null) {
-                  Feed? feed = await ResolveHelper.parseFeed(
+                  FeedModel? feed = await ResolveHelper.parseFeedModel(
                     opmlOutline.xmlUrl!,
                     category,
                     opmlOutline.title ?? opmlOutline.text,
                   );
                   if (feed != null) {
-                    IsarHelper.saveFeed(feed);
+                    DbHelper.saveFeed(feed);
                     successCount++;
                   }
                 }

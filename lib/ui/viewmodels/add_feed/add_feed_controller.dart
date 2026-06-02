@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:meread/helpers/isar_helper.dart';
+import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/helpers/resolve_helper.dart';
 import 'package:meread/models/feed.dart';
 
@@ -10,7 +10,7 @@ class AddFeedController extends GetxController {
   RxBool isResolved = false.obs;
 
   final addressController = TextEditingController();
-  Feed? feed;
+  FeedModel? feed;
 
   Future<void> pasteAddress() async {
     String? address = (await Clipboard.getData('text/plain'))?.text;
@@ -24,7 +24,7 @@ class AddFeedController extends GetxController {
 
   Future<void> resolveAddress() async {
     final url = addressController.text;
-    feed = await ResolveHelper.parseFeed(url);
+    feed = await ResolveHelper.parseFeedModel(url);
     if (feed == null) {
       Fluttertoast.showToast(msg: 'feedResolveError'.tr);
     }
@@ -33,7 +33,7 @@ class AddFeedController extends GetxController {
 
   Future<bool> isExists() async {
     final url = addressController.text;
-    final result = await IsarHelper.isExistsFeed(url);
+    final result = await DbHelper.isExistsFeed(url);
     if (result != null) {
       feed = result;
     }

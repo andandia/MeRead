@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:get/get.dart';
-import 'package:meread/helpers/isar_helper.dart';
+import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/helpers/prefs_helper.dart';
 import 'package:meread/models/category.dart';
 import 'package:meread/models/post.dart';
 import 'package:meread/ui/viewmodels/home_controller.dart';
-import 'package:meread/ui/viewmodels/post/post_controller.dart';
+
 import 'package:meread/ui/widgets/feed_panel.dart';
 import 'package:meread/ui/widgets/post_card.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -87,8 +87,8 @@ class _HomeViewState extends State<HomeView> {
                     },
                     suggestionsBuilder: (BuildContext context,
                         SearchController controller) async {
-                      List<Post> results =
-                          await IsarHelper.search(controller.text);
+                      List<PostModel> results =
+                          await DbHelper.search(controller.text);
                       return results
                           .map((e) => Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -100,7 +100,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
                 PopupMenuItem(
-                  onTap: c.toAddFeed,
+                  onTap: c.toAddFeedModel,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -224,12 +224,12 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                 ),
-                for (Category category in c.categorys)
+                for (CategoryModel category in c.categorys)
                   FeedPanel(
                     category: category,
-                    categoryOnTap: () => c.focusCategory(category),
-                    feedOnTap: (feed) => c.focusFeed(feed),
-                    feedOnLongPress: (feed) => c.toEditFeed(feed),
+                    categoryOnTap: (CategoryModel cat) => c.focusCategoryModel(cat),
+                    feedOnTap: (feed) => c.focusFeedModel(feed),
+                    feedOnLongPress: (feed) => c.toEditFeedModel(feed),
                   ),
               ],
             ),

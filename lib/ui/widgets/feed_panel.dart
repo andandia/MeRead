@@ -4,15 +4,15 @@ import 'package:meread/models/category.dart';
 import 'package:meread/models/feed.dart';
 
 class FeedPanel extends StatefulWidget {
-  final Category category;
-  final Function() categoryOnTap;
-  final Function(Feed feed) feedOnTap;
-  final Function(Feed feed) feedOnLongPress;
+  final CategoryModel category;
+  final Function(CategoryModel category)? categoryOnTap;
+  final Function(FeedModel feed) feedOnTap;
+  final Function(FeedModel feed) feedOnLongPress;
 
   const FeedPanel({
     super.key,
     required this.category,
-    required this.categoryOnTap,
+    this.categoryOnTap,
     required this.feedOnTap,
     required this.feedOnLongPress,
   });
@@ -22,64 +22,69 @@ class FeedPanel extends StatefulWidget {
 }
 
 class _FeedPanelState extends State<FeedPanel> {
-  bool _expanded = false;
+  bool isExpanded = true;
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Column(
-        children: [
-          ListTile(
-            leading: IconButton(
-              icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  _expanded = !_expanded;
-                });
-              },
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            widget.category.name,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
             ),
-            title: Text(
-              widget.category.name,
-              style: const TextStyle(fontSize: 16),
-            ),
-            contentPadding: const EdgeInsets.all(0),
-            onTap: () => widget.categoryOnTap(),
-            dense: true,
           ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 100),
-            transitionBuilder: (child, animation) {
-              return SizeTransition(
-                sizeFactor: animation,
-                child: child,
-              );
-            },
-            child: _expanded
-                ? Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
+          trailing: Icon(
+            isExpanded ? Icons.expand_less : Icons.expand_more,
+          ),
+          onTap: () {
+            if (widget.categoryOnTap != null) {
+              widget.categoryOnTap!(widget.category);
+            }
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+        ),
+        AnimatedCrossFade(
+          firstChild: Container(),
+          secondChild: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: widget.category.feeds.isEmpty
+                ? const SizedBox.shrink()
+                : Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18),
                       color: Get.theme.colorScheme.secondaryContainer
                           .withAlpha(100),
                     ),
                     child: Column(
-                      children: widget.category.feeds
-                          .map((feed) => ListTile(
+                      children: widget.category.feeds.toList()
+                          .map<Widget>((feedModel) {
+                              final feed = feedModel;
+                              return ListTile(
                                 title: Text(feed.title),
                                 dense: true,
                                 visualDensity: VisualDensity.compact,
                                 onTap: () => widget.feedOnTap(feed),
-                                onLongPress: () => widget.feedOnLongPress(feed),
+                                onLongPress: () =>
+                                    widget.feedOnLongPress(feed),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24),
                                 ),
-                              ))
+                              );
+                          })
                           .toList(),
                     ),
-                  )
-                : const SizedBox.shrink(),
+                  ),
           ),
-        ],
-      ),
+          crossFadeState: isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 300),
+        ),
+      ],
     );
   }
 }
