@@ -13,6 +13,7 @@ class PostModel {
   bool read;
   bool favorite;
   bool fullText;
+  List<FeedModel>? mergedFeeds;
 
   PostModel({
     this.id,
@@ -23,6 +24,7 @@ class PostModel {
     required this.read,
     required this.favorite,
     required this.fullText,
+    this.mergedFeeds,
   });
 
   factory PostModel.fromDb(Post dbPost, {FeedModel? feedModel}) {

@@ -89,9 +89,22 @@ class DbHelper {
       result.addAll(posts.map((p) => post_model.PostModel.fromDb(p, feedModel: fModel)));
     }
 
-    final Map<String, post_model.PostModel> uniquePostsMap = {
-      for (var post in result) post.title: post
-    };
+    final Map<String, post_model.PostModel> uniquePostsMap = {};
+    for (var post in result) {
+      if (uniquePostsMap.containsKey(post.link)) {
+        // Merge feeds
+        final existingPost = uniquePostsMap[post.link]!;
+        existingPost.mergedFeeds ??= [];
+        if (existingPost.feed.value != null && !existingPost.mergedFeeds!.contains(existingPost.feed.value!)) {
+          existingPost.mergedFeeds!.add(existingPost.feed.value!);
+        }
+        if (post.feed.value != null && !existingPost.mergedFeeds!.contains(post.feed.value!)) {
+          existingPost.mergedFeeds!.add(post.feed.value!);
+        }
+      } else {
+        uniquePostsMap[post.link] = post;
+      }
+    }
     result = uniquePostsMap.values.toList();
 
     result.sort((a, b) => b.pubDate.compareTo(a.pubDate));
