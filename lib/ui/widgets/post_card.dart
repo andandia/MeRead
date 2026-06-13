@@ -71,16 +71,21 @@ class PostCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    post.feed.value?.title ?? '',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.secondary.withAlpha(
-                            post.read ? 120 : 255,
-                          ),
+                  Expanded(
+                    child: Text(
+                      post.mergedFeeds != null && post.mergedFeeds!.isNotEmpty
+                          ? post.mergedFeeds!.map((f) => f.title).join(', ')
+                          : post.feed.value?.title ?? '',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.secondary.withAlpha(
+                              post.read ? 120 : 255,
+                            ),
+                      ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 8),
                   if (post.favorite)
                     Container(
                       width: 24,
