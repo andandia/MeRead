@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
           supportedLocales: const [
             Locale('en', 'US'),
             Locale('zh', 'CN'),
+            Locale('ja', 'JP'),
           ],
           locale: PrefsHelper.language == 'system'
               ? Get.deviceLocale
