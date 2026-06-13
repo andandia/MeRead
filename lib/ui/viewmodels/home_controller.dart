@@ -14,7 +14,7 @@ class HomeController extends GetxController {
   RxList<PostModel> postList = <PostModel>[].obs;
   RxBool onlyUnread = false.obs;
   RxBool onlyFavorite = false.obs;
-  RxString appBarTitle = 'MeRead'.tr.obs;
+  RxString appBarTitle = 'allFeeds'.tr.obs;
 
   final searchController = SearchController();
 
@@ -28,7 +28,7 @@ class HomeController extends GetxController {
   Future<void> getFeeds() async {
     feeds.value = await DbHelper.getFeeds();
     categorys.value = await DbHelper.getCategorys();
-    appBarTitle.value = 'MeRead'.tr;
+    appBarTitle.value = 'allFeeds'.tr;
   }
 
   Future<void> getUnreadCount() async {
@@ -67,7 +67,7 @@ class HomeController extends GetxController {
     await getPosts();
     onlyUnread.value = false;
     onlyFavorite.value = false;
-    appBarTitle.value = 'MeRead'.tr;
+    appBarTitle.value = 'allFeeds'.tr;
     Get.back();
   }
 
