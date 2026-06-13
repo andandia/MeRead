@@ -21,6 +21,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey();
   final c = Get.put(HomeController());
+  bool _isFabOpen = false;
 
   @override
   void initState() {
@@ -30,6 +31,12 @@ class _HomeViewState extends State<HomeView> {
         _refreshKey.currentState?.show();
       });
     }
+  }
+
+  void _toggleFab() {
+    setState(() {
+      _isFabOpen = !_isFabOpen;
+    });
   }
 
   @override
@@ -240,12 +247,103 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Add action
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (_isFabOpen) ...[
+            FloatingActionButton.extended(
+              heroTag: 'markAllRead',
+              onPressed: () {
+                c.markAllRead();
+                _toggleFab();
+              },
+              label: Text('markAllAsRead'.tr),
+              icon: const Icon(Icons.done_all_outlined),
+            ),
+            const SizedBox(height: 16),
+            FloatingActionButton.extended(
+              heroTag: 'selectFeed',
+              onPressed: () {
+                _toggleFab();
+                _showFeedSelectionModal(context);
+              },
+              label: Text('allFeeds'.tr),
+              icon: const Icon(Icons.list),
+            ),
+            const SizedBox(height: 16),
+          ],
+          FloatingActionButton(
+            heroTag: 'mainFab',
+            onPressed: _toggleFab,
+            child: Icon(_isFabOpen ? Icons.close : Icons.menu),
+          ),
+        ],
       ),
+    );
+  }
+
+  void _showFeedSelectionModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+              maxWidth: MediaQuery.of(context).size.width * 0.9,
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'allFeeds'.tr,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: Obx(
+                    () => ListView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      children: [
+                        ListTile(
+                          title: Text('allFeeds'.tr),
+                          onTap: () {
+                            c.focusAllFeeds();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        for (CategoryModel category in c.categorys)
+                          FeedPanel(
+                            category: category,
+                            categoryOnTap: (CategoryModel cat) {
+                              c.focusCategoryModel(cat);
+                              Navigator.of(context).pop();
+                            },
+                            feedOnTap: (feed) {
+                              c.focusFeedModel(feed);
+                              Navigator.of(context).pop();
+                            },
+                            feedOnLongPress: (feed) => c.toEditFeedModel(feed),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
