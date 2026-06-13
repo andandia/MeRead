@@ -236,6 +236,12 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // TODO: Add action
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
