@@ -36,8 +36,12 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Text(
-              c.appBarTitle.value,
+        title: Obx(() => FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                c.appBarTitle.value,
+              ),
             )),
         centerTitle: false,
         actions: [
