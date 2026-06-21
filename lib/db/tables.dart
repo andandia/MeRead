@@ -32,3 +32,11 @@ class Posts extends Table {
   BoolColumn get favorite => boolean()();
   BoolColumn get fullText => boolean()();
 }
+
+@DataClassName('DeletedPost')
+class DeletedPosts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+  TextColumn get link => text()();
+  DateTimeColumn get deletedAt => dateTime()();
+}

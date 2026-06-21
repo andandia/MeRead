@@ -150,61 +150,94 @@ class _HomeViewState extends State<HomeView> {
                   : const BouncingScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
               itemBuilder: (context, index) {
-                return SwipeActionCell(
-                  key: ObjectKey(c.postList[index]),
-                  fullSwipeFactor: PrefsHelper.swipeActionDistance,
-                  trailingActions: [
-                    SwipeAction(
-                      color: Colors.transparent,
-                      content: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                        ),
-                        child: Icon(
-                          Icons.done_outline_rounded,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSecondaryContainer,
-                        ),
+                final post = c.postList[index];
+
+                SwipeAction buildSwipeAction(int actionType) {
+                  IconData iconData;
+                  if (actionType == 0) {
+                    iconData = post.read ? Icons.remove_done : Icons.done_outline_rounded;
+                  } else if (actionType == 1) {
+                    iconData = post.favorite ? Icons.bookmark_remove : Icons.bookmark_add_outlined;
+                  } else if (actionType == 2) {
+                    iconData = Icons.delete_outline;
+                  } else {
+                    iconData = Icons.not_interested; // fallback
+                  }
+
+                  return SwipeAction(
+                    color: Colors.transparent,
+                    content: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Theme.of(context).colorScheme.secondaryContainer,
                       ),
-                      onTap: (handler) async {
-                        c.updateReadStatus(c.postList[index]);
+                      child: Icon(
+                        iconData,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
+                    ),
+                    onTap: (handler) async {
+                      if (actionType == 0) {
+                        c.updateReadStatus(post);
                         c.getUnreadCount();
                         await handler(false);
-                      },
-                    ),
-                  ],
+                      } else if (actionType == 1) {
+                        c.updateFavoriteStatus(post);
+                        await handler(false);
+                      } else if (actionType == 2) {
+                        c.deletePost(post);
+                        await handler(true);
+                      } else {
+                        await handler(false);
+                      }
+                    },
+                  );
+                }
+
+                List<SwipeAction> trailingActions = [];
+                if (PrefsHelper.leftSwipeAction != 3) {
+                  trailingActions.add(buildSwipeAction(PrefsHelper.leftSwipeAction));
+                }
+
+                List<SwipeAction> leadingActions = [];
+                if (PrefsHelper.rightSwipeAction != 3) {
+                  leadingActions.add(buildSwipeAction(PrefsHelper.rightSwipeAction));
+                }
+
+                return SwipeActionCell(
+                  key: ObjectKey(post),
+                  fullSwipeFactor: PrefsHelper.swipeActionDistance,
+                  trailingActions: trailingActions,
+                  leadingActions: leadingActions,
                   child: InkWell(
                     onTap: () {
-                      if (c.postList[index].feed.value?.openType == 0) {
-                        Get.toNamed('/post', arguments: c.postList[index])!
+                      if (post.feed.value?.openType == 0) {
+                        Get.toNamed('/post', arguments: post)!
                             .then((_) {
                           c.getPosts();
                           c.getUnreadCount();
                         });
-                      } else if (c.postList[index].feed.value?.openType == 1) {
+                      } else if (post.feed.value?.openType == 1) {
                         launchUrlString(
-                          c.postList[index].link,
+                          post.link,
                           mode: LaunchMode.inAppBrowserView,
                         );
-                      } else if (c.postList[index].feed.value?.openType == 2) {
+                      } else if (post.feed.value?.openType == 2) {
                         launchUrlString(
-                          c.postList[index].link,
+                          post.link,
                           mode: LaunchMode.externalApplication,
                         );
                       } else {
-                        Get.toNamed('/post', arguments: c.postList[index])!
+                        Get.toNamed('/post', arguments: post)!
                             .then((_) {
                           c.getPosts();
                           c.getUnreadCount();
                         });
                       }
                     },
-                    child: PostCard(post: c.postList[index]),
+                    child: PostCard(post: post),
                   ),
                 );
               },

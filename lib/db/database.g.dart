@@ -1100,18 +1100,275 @@ class PostsCompanion extends UpdateCompanion<Post> {
   }
 }
 
+class $DeletedPostsTable extends DeletedPosts
+    with TableInfo<$DeletedPostsTable, DeletedPost> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DeletedPostsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _linkMeta = const VerificationMeta('link');
+  @override
+  late final GeneratedColumn<String> link = GeneratedColumn<String>(
+      'link', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, title, link, deletedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'deleted_posts';
+  @override
+  VerificationContext validateIntegrity(Insertable<DeletedPost> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('link')) {
+      context.handle(
+          _linkMeta, link.isAcceptableOrUnknown(data['link']!, _linkMeta));
+    } else if (isInserting) {
+      context.missing(_linkMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    } else if (isInserting) {
+      context.missing(_deletedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DeletedPost map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DeletedPost(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      link: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}link'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at'])!,
+    );
+  }
+
+  @override
+  $DeletedPostsTable createAlias(String alias) {
+    return $DeletedPostsTable(attachedDatabase, alias);
+  }
+}
+
+class DeletedPost extends DataClass implements Insertable<DeletedPost> {
+  final int id;
+  final String title;
+  final String link;
+  final DateTime deletedAt;
+  const DeletedPost(
+      {required this.id,
+      required this.title,
+      required this.link,
+      required this.deletedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    map['link'] = Variable<String>(link);
+    map['deleted_at'] = Variable<DateTime>(deletedAt);
+    return map;
+  }
+
+  DeletedPostsCompanion toCompanion(bool nullToAbsent) {
+    return DeletedPostsCompanion(
+      id: Value(id),
+      title: Value(title),
+      link: Value(link),
+      deletedAt: Value(deletedAt),
+    );
+  }
+
+  factory DeletedPost.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DeletedPost(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      link: serializer.fromJson<String>(json['link']),
+      deletedAt: serializer.fromJson<DateTime>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'link': serializer.toJson<String>(link),
+      'deletedAt': serializer.toJson<DateTime>(deletedAt),
+    };
+  }
+
+  DeletedPost copyWith(
+          {int? id, String? title, String? link, DateTime? deletedAt}) =>
+      DeletedPost(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        link: link ?? this.link,
+        deletedAt: deletedAt ?? this.deletedAt,
+      );
+  DeletedPost copyWithCompanion(DeletedPostsCompanion data) {
+    return DeletedPost(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      link: data.link.present ? data.link.value : this.link,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DeletedPost(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('link: $link, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, title, link, deletedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DeletedPost &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.link == this.link &&
+          other.deletedAt == this.deletedAt);
+}
+
+class DeletedPostsCompanion extends UpdateCompanion<DeletedPost> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<String> link;
+  final Value<DateTime> deletedAt;
+  const DeletedPostsCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.link = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+  });
+  DeletedPostsCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    required String link,
+    required DateTime deletedAt,
+  })  : title = Value(title),
+        link = Value(link),
+        deletedAt = Value(deletedAt);
+  static Insertable<DeletedPost> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? link,
+    Expression<DateTime>? deletedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (link != null) 'link': link,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+    });
+  }
+
+  DeletedPostsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? title,
+      Value<String>? link,
+      Value<DateTime>? deletedAt}) {
+    return DeletedPostsCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      link: link ?? this.link,
+      deletedAt: deletedAt ?? this.deletedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (link.present) {
+      map['link'] = Variable<String>(link.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DeletedPostsCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('link: $link, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $FeedsTable feeds = $FeedsTable(this);
   late final $PostsTable posts = $PostsTable(this);
+  late final $DeletedPostsTable deletedPosts = $DeletedPostsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [categories, feeds, posts];
+      [categories, feeds, posts, deletedPosts];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -2040,6 +2297,158 @@ typedef $$PostsTableProcessedTableManager = ProcessedTableManager<
     (Post, $$PostsTableReferences),
     Post,
     PrefetchHooks Function({bool feedId})>;
+typedef $$DeletedPostsTableCreateCompanionBuilder = DeletedPostsCompanion
+    Function({
+  Value<int> id,
+  required String title,
+  required String link,
+  required DateTime deletedAt,
+});
+typedef $$DeletedPostsTableUpdateCompanionBuilder = DeletedPostsCompanion
+    Function({
+  Value<int> id,
+  Value<String> title,
+  Value<String> link,
+  Value<DateTime> deletedAt,
+});
+
+class $$DeletedPostsTableFilterComposer
+    extends Composer<_$AppDatabase, $DeletedPostsTable> {
+  $$DeletedPostsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get link => $composableBuilder(
+      column: $table.link, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$DeletedPostsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DeletedPostsTable> {
+  $$DeletedPostsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get link => $composableBuilder(
+      column: $table.link, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DeletedPostsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DeletedPostsTable> {
+  $$DeletedPostsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get link =>
+      $composableBuilder(column: $table.link, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$DeletedPostsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DeletedPostsTable,
+    DeletedPost,
+    $$DeletedPostsTableFilterComposer,
+    $$DeletedPostsTableOrderingComposer,
+    $$DeletedPostsTableAnnotationComposer,
+    $$DeletedPostsTableCreateCompanionBuilder,
+    $$DeletedPostsTableUpdateCompanionBuilder,
+    (
+      DeletedPost,
+      BaseReferences<_$AppDatabase, $DeletedPostsTable, DeletedPost>
+    ),
+    DeletedPost,
+    PrefetchHooks Function()> {
+  $$DeletedPostsTableTableManager(_$AppDatabase db, $DeletedPostsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DeletedPostsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DeletedPostsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DeletedPostsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String> link = const Value.absent(),
+            Value<DateTime> deletedAt = const Value.absent(),
+          }) =>
+              DeletedPostsCompanion(
+            id: id,
+            title: title,
+            link: link,
+            deletedAt: deletedAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String title,
+            required String link,
+            required DateTime deletedAt,
+          }) =>
+              DeletedPostsCompanion.insert(
+            id: id,
+            title: title,
+            link: link,
+            deletedAt: deletedAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DeletedPostsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $DeletedPostsTable,
+    DeletedPost,
+    $$DeletedPostsTableFilterComposer,
+    $$DeletedPostsTableOrderingComposer,
+    $$DeletedPostsTableAnnotationComposer,
+    $$DeletedPostsTableCreateCompanionBuilder,
+    $$DeletedPostsTableUpdateCompanionBuilder,
+    (
+      DeletedPost,
+      BaseReferences<_$AppDatabase, $DeletedPostsTable, DeletedPost>
+    ),
+    DeletedPost,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2050,4 +2459,6 @@ class $AppDatabaseManager {
       $$FeedsTableTableManager(_db, _db.feeds);
   $$PostsTableTableManager get posts =>
       $$PostsTableTableManager(_db, _db.posts);
+  $$DeletedPostsTableTableManager get deletedPosts =>
+      $$DeletedPostsTableTableManager(_db, _db.deletedPosts);
 }
