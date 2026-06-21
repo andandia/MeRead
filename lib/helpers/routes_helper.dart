@@ -5,6 +5,7 @@ import 'package:meread/ui/views/home_view.dart';
 import 'package:meread/ui/views/post/post_view.dart';
 import 'package:meread/ui/views/setting/about/about_view.dart';
 import 'package:meread/ui/views/setting/data_manage/data_manage_view.dart';
+import 'package:meread/ui/views/setting/feed/feed_setting_view.dart';
 import 'package:meread/ui/views/setting/display/display_setting_view.dart';
 import 'package:meread/ui/views/setting/read/read_setting_view.dart';
 import 'package:meread/ui/views/setting/resolve/resolve_setting_view.dart';
@@ -19,6 +20,7 @@ class RouteHelp {
     GetPage(name: '/addFeed', page: () => const AddFeedView()),
     GetPage(name: '/editFeed', page: () => const EditFeedView()),
     GetPage(name: '/setting', page: () => const SettingView()),
+    GetPage(name: '/setting/feed', page: () => const FeedSettingView()),
     GetPage(name: '/setting/display', page: () => const DisplaySettingView()),
     GetPage(name: '/setting/read', page: () => const ReadSettingView()),
     GetPage(name: '/setting/resolve', page: () => const ResolveSettingView()),

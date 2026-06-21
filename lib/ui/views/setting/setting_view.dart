@@ -25,6 +25,15 @@ class SettingView extends StatelessWidget {
                 onTap: () => Get.toNamed('/setting/display'),
               ),
               ListTile(
+                leading: const Icon(Icons.rss_feed_rounded),
+                title: Text('feedSetting'.tr),
+                subtitle: Text(
+                  'feedSettingInfo'.tr,
+                  style: TextStyle(color: Get.theme.colorScheme.outline),
+                ),
+                onTap: () => Get.toNamed('/setting/feed'),
+              ),
+              ListTile(
                 leading: const Icon(Icons.article_outlined),
                 title: Text('readSetting'.tr),
                 subtitle: Text(
