@@ -44,6 +44,12 @@ class AppTranslation extends Translations {
           // Route: /setting
           'moreSetting': '更多设置',
 
+          // Route: /setting/feed
+          'feedSetting': '订阅设置',
+          'feedSettingInfo': '下拉刷新距离，左滑判定距离',
+          'pullToRefreshDistance': '下拉刷新距离',
+          'swipeActionDistance': '左滑操作判定距离',
+
           // Route: /setting/display
           'displaySetting': '显示设置',
           'displaySettingInfo': '主题，动效，缩放，语言',
@@ -109,7 +115,12 @@ class AppTranslation extends Translations {
           'openSource': '开源地址',
           'contactAuthor': '联系作者',
         },
-        'en_US': {},
+        'en_US': {
+          'feedSetting': 'Feed Setting',
+          'feedSettingInfo': 'Pull to refresh distance, swipe action distance',
+          'pullToRefreshDistance': 'Pull to refresh distance',
+          'swipeActionDistance': 'Swipe action distance',
+        },
         'ja_JP': {
           'MeRead': 'MeRead',
           'confirm': '決定',
@@ -150,6 +161,12 @@ class AppTranslation extends Translations {
 
           // Route: /setting
           'moreSetting': '設定',
+
+          // Route: /setting/feed
+          'feedSetting': 'フィード設定',
+          'feedSettingInfo': '引っ張って更新する距離、左スワイプ判定距離',
+          'pullToRefreshDistance': '引っ張って更新する距離',
+          'swipeActionDistance': '左スワイプ判定距離',
 
           // Route: /setting/display
           'displaySetting': '表示設定',

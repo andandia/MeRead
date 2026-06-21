@@ -77,4 +77,12 @@ class PrefsHelper {
   // Proxy port
   static String get proxyPort => _prefs.getString('proxyPort') ?? '';
   static set proxyPort(String value) => _prefs.setString('proxyPort', value);
+
+  // Pull to refresh distance
+  static double get pullToRefreshDistance => _prefs.getDouble('pullToRefreshDistance') ?? 40.0;
+  static set pullToRefreshDistance(double value) => _prefs.setDouble('pullToRefreshDistance', value);
+
+  // Swipe action distance factor
+  static double get swipeActionDistance => _prefs.getDouble('swipeActionDistance') ?? 0.75;
+  static set swipeActionDistance(double value) => _prefs.setDouble('swipeActionDistance', value);
 }

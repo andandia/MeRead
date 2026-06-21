@@ -141,6 +141,7 @@ class _HomeViewState extends State<HomeView> {
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshKey,
+          displacement: PrefsHelper.pullToRefreshDistance,
           onRefresh: c.refreshPosts,
           child: Obx(
             () => ListView.separated(
@@ -151,6 +152,7 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 return SwipeActionCell(
                   key: ObjectKey(c.postList[index]),
+                  fullSwipeFactor: PrefsHelper.swipeActionDistance,
                   trailingActions: [
                     SwipeAction(
                       color: Colors.transparent,
