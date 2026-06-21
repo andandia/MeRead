@@ -31,16 +31,24 @@ LazyDatabase _openConnection() {
   });
 }
 
-@DriftDatabase(tables: [Categories, Feeds, Posts])
+@DriftDatabase(tables: [Categories, Feeds, Posts, DeletedPosts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          await m.createTable(deletedPosts);
+        }
+      },
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       },
@@ -144,6 +152,26 @@ class AppDatabase extends _$AppDatabase {
           where: (t) => t.id.equals(post.id),
         );
       }
+    });
+  }
+
+  // --- Deleted Posts ---
+  Future<List<DeletedPost>> getDeletedPosts() => select(deletedPosts).get();
+
+  Future<void> saveDeletedPost(DeletedPostsCompanion entry) {
+    return into(deletedPosts).insert(entry, mode: InsertMode.insertOrReplace);
+  }
+
+  Future<void> deletePostModelAndSaveDeleted(Post post) async {
+    await transaction(() async {
+      await (delete(posts)..where((t) => t.id.equals(post.id))).go();
+      await into(deletedPosts).insert(
+        DeletedPostsCompanion(
+          title: Value(post.title),
+          link: Value(post.link),
+          deletedAt: Value(DateTime.now()),
+        ),
+      );
     });
   }
 }

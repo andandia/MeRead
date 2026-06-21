@@ -122,8 +122,26 @@ class HomeController extends GetxController {
   // Update a PostModel read status
   void updateReadStatus(PostModel post) {
     final int index = postList.indexOf(post);
+    post.read = !post.read;
     DbHelper.updatePostRead(post);
     postList[index] = post;
+  }
+
+  // Update a PostModel favorite status
+  void updateFavoriteStatus(PostModel post) {
+    final int index = postList.indexOf(post);
+    post.favorite = !post.favorite;
+    DbHelper.savePost(post);
+    postList[index] = post;
+  }
+
+  // Delete a post
+  void deletePost(PostModel post) async {
+    final int index = postList.indexOf(post);
+    if (index != -1) {
+      postList.removeAt(index);
+    }
+    await DbHelper.deletePostModelAndSaveDeleted(post);
   }
 
   // Mark all posts as read

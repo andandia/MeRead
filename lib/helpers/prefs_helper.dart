@@ -85,4 +85,12 @@ class PrefsHelper {
   // Swipe action distance factor
   static double get swipeActionDistance => _prefs.getDouble('swipeActionDistance') ?? 0.75;
   static set swipeActionDistance(double value) => _prefs.setDouble('swipeActionDistance', value);
+
+  // Left swipe action (0: read, 1: favorite, 2: delete, 3: none)
+  static int get leftSwipeAction => _prefs.getInt('leftSwipeAction') ?? 0;
+  static set leftSwipeAction(int value) => _prefs.setInt('leftSwipeAction', value);
+
+  // Right swipe action (0: read, 1: favorite, 2: delete, 3: none)
+  static int get rightSwipeAction => _prefs.getInt('rightSwipeAction') ?? 3;
+  static set rightSwipeAction(int value) => _prefs.setInt('rightSwipeAction', value);
 }

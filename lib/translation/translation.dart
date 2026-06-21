@@ -49,6 +49,12 @@ class AppTranslation extends Translations {
           'feedSettingInfo': '下拉刷新距离，左滑判定距离',
           'pullToRefreshDistance': '下拉刷新距离',
           'swipeActionDistance': '左滑操作判定距离',
+          'leftSwipeAction': '左滑操作',
+          'rightSwipeAction': '右滑操作',
+          'actionToggleRead': '切换已读/未读',
+          'actionToggleFavorite': '收藏/取消收藏',
+          'actionDelete': '删除',
+          'actionNone': '无',
 
           // Route: /setting/display
           'displaySetting': '显示设置',
@@ -120,6 +126,12 @@ class AppTranslation extends Translations {
           'feedSettingInfo': 'Pull to refresh distance, swipe action distance',
           'pullToRefreshDistance': 'Pull to refresh distance',
           'swipeActionDistance': 'Swipe action distance',
+          'leftSwipeAction': 'Left Swipe Action',
+          'rightSwipeAction': 'Right Swipe Action',
+          'actionToggleRead': 'Toggle Read Status',
+          'actionToggleFavorite': 'Toggle Favorite Status',
+          'actionDelete': 'Delete',
+          'actionNone': 'None',
         },
         'ja_JP': {
           'MeRead': 'MeRead',
@@ -167,6 +179,12 @@ class AppTranslation extends Translations {
           'feedSettingInfo': '引っ張って更新する距離、左スワイプ判定距離',
           'pullToRefreshDistance': '引っ張って更新する距離',
           'swipeActionDistance': '左スワイプ判定距離',
+          'leftSwipeAction': '左スワイプ時のアクション',
+          'rightSwipeAction': '右スワイプ時のアクション',
+          'actionToggleRead': '既読 / 未読を切り替え',
+          'actionToggleFavorite': 'お気に入りに追加 / 解除',
+          'actionDelete': '記事の削除',
+          'actionNone': 'なし',
 
           // Route: /setting/display
           'displaySetting': '表示設定',

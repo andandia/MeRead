@@ -14,4 +14,17 @@ class FeedSettingController extends GetxController {
     swipeActionDistance.value = value;
     PrefsHelper.swipeActionDistance = value;
   }
+
+  final leftSwipeAction = PrefsHelper.leftSwipeAction.obs;
+  final rightSwipeAction = PrefsHelper.rightSwipeAction.obs;
+
+  void setLeftSwipeAction(int value) {
+    leftSwipeAction.value = value;
+    PrefsHelper.leftSwipeAction = value;
+  }
+
+  void setRightSwipeAction(int value) {
+    rightSwipeAction.value = value;
+    PrefsHelper.rightSwipeAction = value;
+  }
 }

@@ -190,4 +190,24 @@ class DbHelper {
 
     return result;
   }
+
+  static Future<List<db.DeletedPost>> getDeletedPosts() async {
+    return await _db.getDeletedPosts();
+  }
+
+  static Future<void> deletePostModelAndSaveDeleted(post_model.PostModel postModel) async {
+    if (postModel.id == null) return;
+    final dbPost = db.Post(
+      id: postModel.id!,
+      feedId: postModel.feed.value?.id,
+      title: postModel.title,
+      link: postModel.link,
+      content: postModel.content,
+      pubDate: postModel.pubDate,
+      read: postModel.read,
+      favorite: postModel.favorite,
+      fullText: postModel.fullText,
+    );
+    await _db.deletePostModelAndSaveDeleted(dbPost);
+  }
 }

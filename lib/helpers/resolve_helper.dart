@@ -60,8 +60,13 @@ class ResolveHelper {
   /// Parse List<FeedModel>
   static Future<List<int>> reslovePosts(List<FeedModel> feeds) async {
     int errorCount = 0;
+
+    // Fetch deleted post URLs
+    final deletedPosts = await DbHelper.getDeletedPosts();
+    final Set<String> deletedUrls = deletedPosts.map((dp) => dp.link).toSet();
+
     for (final FeedModel feed in feeds) {
-      bool res = await _reslovePostModel(feed);
+      bool res = await _reslovePostModel(feed, deletedUrls);
       if (!res) {
         errorCount++;
       }
@@ -71,7 +76,7 @@ class ResolveHelper {
 
   /// Parse a FeedModel to get update
   /// 各投稿を解析するメイン処理
-  static Future<bool> _reslovePostModel(FeedModel feed) async {
+  static Future<bool> _reslovePostModel(FeedModel feed, Set<String> deletedUrls) async {
     try {
       final response = await DioHelper.get(feed.url);
       final postXmlString = response.data;
@@ -83,6 +88,7 @@ class ResolveHelper {
               .isAfter(feedLastUpdated ?? DateTime(0)))) {
             break;
           }
+          if (item.link != null && deletedUrls.contains(item.link)) continue;
           _parseRSSPostItemRss1(item, feed);
         }
         return true;
@@ -94,6 +100,7 @@ class ResolveHelper {
                 .isAfter(feedLastUpdated ?? DateTime(0)))) {
               break;
             }
+            if (item.link != null && deletedUrls.contains(item.link)) continue;
             _parseRSSPostItemRss2(item, feed);
           }
           return true;
@@ -104,6 +111,8 @@ class ResolveHelper {
                 .isAfter(feedLastUpdated ?? DateTime(0)))) {
               break;
             }
+            final link = item.links.isNotEmpty ? item.links[0].href : null;
+            if (link != null && deletedUrls.contains(link)) continue;
             _parseAtomPostItem(item, feed);
           }
           return true;
