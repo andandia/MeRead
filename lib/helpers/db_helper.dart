@@ -29,8 +29,11 @@ class DbHelper {
 
   static Future<void> saveFeed(feed_model.FeedModel feedModel) async {
     // If the feed has a category without an ID, we need to save the category first
-    if (feedModel.category.value != null && feedModel.category.value!.id == null) {
-      final categoryId = await _db.saveCategoryModel(feedModel.category.value!.toDb());
+    if (feedModel.category.value != null &&
+        feedModel.category.value!.id == null) {
+      final categoryId = await _db.saveCategoryModel(
+        feedModel.category.value!.toDb(),
+      );
       feedModel.category.value!.id = categoryId;
     }
     await _db.saveFeedModel(feedModel.toDb());
@@ -44,7 +47,9 @@ class DbHelper {
     return null;
   }
 
-  static Future<DateTime?> getLatesPubDate(feed_model.FeedModel feedModel) async {
+  static Future<DateTime?> getLatesPubDate(
+    feed_model.FeedModel feedModel,
+  ) async {
     if (feedModel.id == null) return null;
     final posts = await _db.getPostsByFeedId(feedModel.id!);
     if (posts.isNotEmpty) {
@@ -81,12 +86,16 @@ class DbHelper {
     await _db.savePostModel(postModel.toDb());
   }
 
-  static Future<List<post_model.PostModel>> getPostsByFeeds(List<feed_model.FeedModel> feeds) async {
+  static Future<List<post_model.PostModel>> getPostsByFeeds(
+    List<feed_model.FeedModel> feeds,
+  ) async {
     List<post_model.PostModel> result = [];
     for (final fModel in feeds) {
       if (fModel.id == null) continue;
       final posts = await _db.getPostsByFeedId(fModel.id!);
-      result.addAll(posts.map((p) => post_model.PostModel.fromDb(p, feedModel: fModel)));
+      result.addAll(
+        posts.map((p) => post_model.PostModel.fromDb(p, feedModel: fModel)),
+      );
     }
 
     final Map<String, post_model.PostModel> uniquePostsMap = {};
@@ -95,10 +104,12 @@ class DbHelper {
         // Merge feeds
         final existingPost = uniquePostsMap[post.link]!;
         existingPost.mergedFeeds ??= [];
-        if (existingPost.feed.value != null && !existingPost.mergedFeeds!.contains(existingPost.feed.value!)) {
+        if (existingPost.feed.value != null &&
+            !existingPost.mergedFeeds!.contains(existingPost.feed.value!)) {
           existingPost.mergedFeeds!.add(existingPost.feed.value!);
         }
-        if (post.feed.value != null && !existingPost.mergedFeeds!.contains(post.feed.value!)) {
+        if (post.feed.value != null &&
+            !existingPost.mergedFeeds!.contains(post.feed.value!)) {
           existingPost.mergedFeeds!.add(post.feed.value!);
         }
       } else {
@@ -158,17 +169,23 @@ class DbHelper {
 
   static Future<List<category_model.CategoryModel>> getCategorys() async {
     final categories = await _db.getCategories();
-    final cModels = categories.map((c) => category_model.CategoryModel.fromDb(c)).toList();
+    final cModels = categories
+        .map((c) => category_model.CategoryModel.fromDb(c))
+        .toList();
 
     final feeds = await getFeeds();
     for (final cModel in cModels) {
-      cModel.feeds.addAll(feeds.where((f) => f.category.value?.id == cModel.id));
+      cModel.feeds.addAll(
+        feeds.where((f) => f.category.value?.id == cModel.id),
+      );
     }
 
     return cModels;
   }
 
-  static Future<category_model.CategoryModel?> getCategoryByName(String name) async {
+  static Future<category_model.CategoryModel?> getCategoryByName(
+    String name,
+  ) async {
     final result = await _db.getCategoryByName(name);
     if (result != null) {
       return category_model.CategoryModel.fromDb(result);
@@ -176,7 +193,9 @@ class DbHelper {
     return null;
   }
 
-  static List<post_model.PostModel> getDescription(List<post_model.PostModel> list) {
+  static List<post_model.PostModel> getDescription(
+    List<post_model.PostModel> list,
+  ) {
     List<post_model.PostModel> result = list;
 
     for (post_model.PostModel post in list) {
@@ -195,7 +214,13 @@ class DbHelper {
     return await _db.getDeletedPosts();
   }
 
-  static Future<void> deletePostModelAndSaveDeleted(post_model.PostModel postModel) async {
+  static Future<void> removeDeletedPost(String link) async {
+    await _db.removeDeletedPost(link);
+  }
+
+  static Future<void> deletePostModelAndSaveDeleted(
+    post_model.PostModel postModel,
+  ) async {
     if (postModel.id == null) return;
     final dbPost = db.Post(
       id: postModel.id!,

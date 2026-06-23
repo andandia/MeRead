@@ -5,6 +5,7 @@ import 'package:meread/ui/views/home_view.dart';
 import 'package:meread/ui/views/post/post_view.dart';
 import 'package:meread/ui/views/setting/about/about_view.dart';
 import 'package:meread/ui/views/setting/data_manage/data_manage_view.dart';
+import 'package:meread/ui/views/setting/data_manage/deleted_posts_view.dart';
 import 'package:meread/ui/views/setting/feed/feed_setting_view.dart';
 import 'package:meread/ui/views/setting/display/display_setting_view.dart';
 import 'package:meread/ui/views/setting/read/read_setting_view.dart';
@@ -25,6 +26,10 @@ class RouteHelp {
     GetPage(name: '/setting/read', page: () => const ReadSettingView()),
     GetPage(name: '/setting/resolve', page: () => const ResolveSettingView()),
     GetPage(name: '/setting/data_manage', page: () => const DataManageView()),
+    GetPage(
+      name: '/setting/data_manage/deleted_posts',
+      page: () => const DeletedPostsView(),
+    ),
     GetPage(name: '/setting/about', page: () => const AboutView()),
   ];
 }
