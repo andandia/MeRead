@@ -11,9 +11,7 @@ class DataManageView extends StatelessWidget {
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverAppBar.large(
-            title: Text('dataManage'.tr),
-          ),
+          SliverAppBar.large(title: Text('dataManage'.tr)),
           SliverList.list(
             children: [
               ListTile(
@@ -33,6 +31,15 @@ class DataManageView extends StatelessWidget {
                   style: TextStyle(color: Get.theme.colorScheme.outline),
                 ),
                 onTap: OpmlHelper.exportOpml,
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_sweep_rounded),
+                title: Text('deletedPosts'.tr),
+                subtitle: Text(
+                  'deletedPostsInfo'.tr,
+                  style: TextStyle(color: Get.theme.colorScheme.outline),
+                ),
+                onTap: () => Get.toNamed('/setting/data_manage/deleted_posts'),
               ),
             ],
           ),

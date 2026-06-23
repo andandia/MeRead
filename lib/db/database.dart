@@ -59,7 +59,8 @@ class AppDatabase extends _$AppDatabase {
   Future<List<Category>> getCategories() => select(categories).get();
 
   Future<Category?> getCategoryByName(String name) {
-    return (select(categories)..where((t) => t.name.equals(name))).getSingleOrNull();
+    return (select(categories)..where((t) => t.name.equals(name)))
+        .getSingleOrNull();
   }
 
   Future<int> saveCategoryModel(CategoriesCompanion entry) {
@@ -127,15 +128,18 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Post>> getPostsByFeedId(int feedId) {
     return (select(posts)
-      ..where((t) => t.feedId.equals(feedId))
-      ..orderBy([(t) => OrderingTerm(expression: t.pubDate, mode: OrderingMode.desc)]))
-    .get();
+          ..where((t) => t.feedId.equals(feedId))
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.pubDate, mode: OrderingMode.desc)
+          ]))
+        .get();
   }
 
   Future<List<Post>> searchPosts(String queryStr) {
     return (select(posts)
-      ..where((t) => t.title.contains(queryStr) | t.content.contains(queryStr)))
-    .get();
+          ..where(
+              (t) => t.title.contains(queryStr) | t.content.contains(queryStr)))
+        .get();
   }
 
   Future<void> updatePostRead(Post post, bool read) {
@@ -157,6 +161,10 @@ class AppDatabase extends _$AppDatabase {
 
   // --- Deleted Posts ---
   Future<List<DeletedPost>> getDeletedPosts() => select(deletedPosts).get();
+
+  Future<void> removeDeletedPost(String link) {
+    return (delete(deletedPosts)..where((t) => t.link.equals(link))).go();
+  }
 
   Future<void> saveDeletedPost(DeletedPostsCompanion entry) {
     return into(deletedPosts).insert(entry, mode: InsertMode.insertOrReplace);
