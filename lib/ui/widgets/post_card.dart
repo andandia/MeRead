@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:meread/models/post.dart';
 
 class PostCard extends StatelessWidget {
@@ -100,7 +101,7 @@ class PostCard extends StatelessWidget {
                               post.read ? 120 : 255,
                             ),
                       ),
-                    ),
+                    ).animate(target: post.favorite ? 1 : 0).scale(duration: 250.ms, curve: Curves.elasticOut),
                   const SizedBox(width: 8),
                   Text(
                     post.pubDate.toLocal().toString().substring(0, 16),
