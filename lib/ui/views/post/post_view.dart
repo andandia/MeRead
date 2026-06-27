@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
@@ -23,11 +24,11 @@ class PostView extends StatelessWidget {
           IconButton(
             onPressed: c.openInBrowser,
             icon: const Icon(Icons.open_in_browser_outlined),
-          ),
+          ).animate().fadeIn(duration: 300.ms, delay: 100.ms).scale(duration: 300.ms, curve: Curves.easeOutBack),
           IconButton(
             onPressed: c.getFullText,
             icon: const Icon(Icons.article_outlined),
-          ),
+          ).animate().fadeIn(duration: 300.ms, delay: 200.ms).scale(duration: 300.ms, curve: Curves.easeOutBack),
           PopupMenuButton(
             elevation: 1,
             position: PopupMenuPosition.under,

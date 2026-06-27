@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:meread/ui/widgets/bounce_tap.dart';
 import 'package:get/get.dart';
 import 'package:meread/helpers/db_helper.dart';
 import 'package:meread/helpers/prefs_helper.dart';
@@ -211,35 +213,38 @@ class _HomeViewState extends State<HomeView> {
                   fullSwipeFactor: PrefsHelper.swipeActionDistance,
                   trailingActions: trailingActions,
                   leadingActions: leadingActions,
-                  child: InkWell(
-                    onTap: () {
-                      if (post.feed.value?.openType == 0) {
-                        Get.toNamed('/post', arguments: post)!
-                            .then((_) {
-                          c.getPosts();
-                          c.getUnreadCount();
-                        });
-                      } else if (post.feed.value?.openType == 1) {
-                        launchUrlString(
-                          post.link,
-                          mode: LaunchMode.inAppBrowserView,
-                        );
-                      } else if (post.feed.value?.openType == 2) {
-                        launchUrlString(
-                          post.link,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      } else {
-                        Get.toNamed('/post', arguments: post)!
-                            .then((_) {
-                          c.getPosts();
-                          c.getUnreadCount();
-                        });
-                      }
-                    },
-                    child: PostCard(post: post),
+                  child: BounceTap(
+                    onTap: () {},
+                    child: InkWell(
+                      onTap: () {
+                        if (post.feed.value?.openType == 0) {
+                          Get.toNamed('/post', arguments: post)!
+                              .then((_) {
+                            c.getPosts();
+                            c.getUnreadCount();
+                          });
+                        } else if (post.feed.value?.openType == 1) {
+                          launchUrlString(
+                            post.link,
+                            mode: LaunchMode.inAppBrowserView,
+                          );
+                        } else if (post.feed.value?.openType == 2) {
+                          launchUrlString(
+                            post.link,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } else {
+                          Get.toNamed('/post', arguments: post)!
+                              .then((_) {
+                            c.getPosts();
+                            c.getUnreadCount();
+                          });
+                        }
+                      },
+                      child: PostCard(post: post),
+                    ),
                   ),
-                );
+                ).animate(key: ValueKey(post.id)).fadeIn(duration: 300.ms, delay: ((index % 15) * 40).ms).slideY(begin: 0.1, end: 0, duration: 300.ms, curve: Curves.easeOutQuad);
               },
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemCount: c.postList.length,
@@ -295,7 +300,7 @@ class _HomeViewState extends State<HomeView> {
               },
               label: Text('markAllAsRead'.tr),
               icon: const Icon(Icons.done_all_outlined),
-            ),
+            ).animate().fadeIn(duration: 200.ms).slideY(begin: 0.5, end: 0, duration: 200.ms),
             const SizedBox(height: 16),
             FloatingActionButton.extended(
               heroTag: 'selectFeed',
@@ -305,7 +310,7 @@ class _HomeViewState extends State<HomeView> {
               },
               label: Text('allFeeds'.tr),
               icon: const Icon(Icons.list),
-            ),
+            ).animate().fadeIn(duration: 200.ms, delay: 50.ms).slideY(begin: 0.5, end: 0, duration: 200.ms),
             const SizedBox(height: 16),
           ],
           FloatingActionButton(
