@@ -18,11 +18,18 @@ class HomeController extends GetxController {
 
   final searchController = SearchController();
 
+  late Future<void> _initFuture;
+
   @override
   void onInit() {
     super.onInit();
-    getFeeds().then((_) => getPosts());
-    getUnreadCount();
+    _initFuture = _init();
+  }
+
+  Future<void> _init() async {
+    await getFeeds();
+    await getPosts();
+    await getUnreadCount();
   }
 
   Future<void> getFeeds() async {
@@ -47,6 +54,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> refreshPosts() async {
+    await _initFuture;
     if (feeds.isEmpty) {
       Fluttertoast.showToast(msg: 'FeedIsEmpty'.tr);
       return;
